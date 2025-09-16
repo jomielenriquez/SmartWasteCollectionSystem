@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartWasteCollectionSystem.Models;
 
@@ -15,6 +16,7 @@ namespace SmartWasteCollectionSystem.Controllers
             _context = context;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             var users = _context.Users.ToList();

@@ -1,0 +1,56 @@
+﻿@model SmartWasteCollectionSystem.Models.User
+@{
+    ViewData["Title"] = "Login Page";
+}
+<style>
+    .card-body h3 {
+        text-align: center;
+    }
+
+    .card {
+        width: 300px;
+        margin-top: 10px;
+    }
+</style>
+<div>
+    <div class="well bs-component container d-flex justify-content-center">
+        <form method="post" asp-action="Login">
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>Admin Login</h3>
+                    <hr />
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">User Name</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="User Name" asp-for="@Model.Email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success"><i class="fa-solid fa-lock-open"></i> Login</button>
+                    </div>
+                    <hr />
+
+                    <a><i class="fa-solid fa-circle-question"></i> Forgot password</a>
+                </div>
+            </div>
+
+            @* @if (!Model.IsSuccess && Model.Errors.Any())
+            {
+                <br />
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div>
+                        @foreach (var error in Model.Errors)
+                        {
+                            <div>@error</div>
+                        }
+                    </div>
+                </div>
+            } *@
+        </form>
+    </div>
+</div>
