@@ -18,7 +18,7 @@ namespace SmartWasteCollectionSystem.Controllers
         public IActionResult Index()
         {
             var users = _context.Users.ToList();
-            return View();
+            return View(users);
         }
 
         public IActionResult Privacy()

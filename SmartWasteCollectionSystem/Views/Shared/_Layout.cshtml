@@ -47,6 +47,7 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
 <script type="text/javascript">
     $(document).ready(function () {
         for (var i = 0; i < 10; i++) {
@@ -81,5 +82,15 @@
 
       // Watch the whole body for new nodes
       observer.observe(document.body, { childList: true, subtree: true });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const link = document.querySelector("center > a[href*='somee.com']");
+      if (link) {
+        link.parentElement.remove(); // remove the whole <center> tag
+        console.log("Somee footer removed 🚀");
+      }
     });
 </script>

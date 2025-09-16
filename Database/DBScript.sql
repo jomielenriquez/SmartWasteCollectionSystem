@@ -1,6 +1,3 @@
-USE [SWCSDB]
-GO
-/****** Object:  Table [dbo].[Users]    Script Date: 16/09/2025 10:34:20 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -31,5 +28,5 @@ ALTER TABLE [dbo].[Users] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
 USE [master]
 GO
-ALTER DATABASE [SWCSDB] SET  READ_WRITE 
+ALTER DATABASE [SmartWasteDB] SET  READ_WRITE 
 GO
