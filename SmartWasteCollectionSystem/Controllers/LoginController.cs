@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartWasteCollectionSystem.Models;
 using System.Security.Claims;
@@ -51,7 +52,12 @@ namespace SmartWasteCollectionSystem.Controllers
                 return View("Index");
             }
         }
-
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Login");
+        }
         public string ComputeMd5Hash(string input)
         {
             using (MD5 md5 = MD5.Create())
