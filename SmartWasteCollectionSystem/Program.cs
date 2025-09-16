@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using SmartWasteCollectionSystem.Models;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add DbContext with SQL Server
+builder.Services.AddDbContext<SwcsdbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
