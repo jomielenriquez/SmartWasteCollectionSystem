@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SmartWasteCollectionSystem.Models;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -32,14 +33,16 @@ namespace SmartWasteCollectionSystem.Controllers
         public async Task<IActionResult> Login(string username, string password)
         {
             var pass = ComputeMd5Hash(password);
-            var user = _context.Users.FirstOrDefault(u => u.Email == username && u.Password == pass);
+            var user = _context.Users
+                .Include(u => u.UserRole)
+                .FirstOrDefault(u => u.Email == username && u.Password == pass);
             if (user != null)
             {
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
                     new Claim("Id", user.UserId.ToString()),
-                    new Claim(ClaimTypes.Role, "User") // Update to have different roles
+                    new Claim(ClaimTypes.Role, user.UserRole.RoleName) // Update to have different roles
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -61,21 +64,18 @@ namespace SmartWasteCollectionSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterNewAccount(User user)
         {
-            if (ModelState.IsValid)
+            user.UserRoleId = _context.UserRoles.FirstOrDefault(r => r.RoleName == "Home Owner").UserRoleId;
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            if (existingUser != null)
             {
-                var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-                if (existingUser != null)
-                {
-                    ViewBag.ErrorMessage = "Email already exists.";
-                    return View("Register");
-                }
-                user.Password = ComputeMd5Hash(user.Password);
-                user.CreatedDate = DateTime.Now;
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Login");
+                ViewBag.ErrorMessage = "Email already exists.";
+                return View("Register");
             }
-            return View("Register", user);
+            user.Password = ComputeMd5Hash(user.Password);
+            user.CreatedDate = DateTime.Now;
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Login");
         }
 
         [Authorize]
