@@ -13,12 +13,13 @@
     }
 </style>
 <div>
+    <img src="~/image/icon.png" class="justify-content-center container bs-component container d-flex" style="width:140px;"/>
     <div class="well bs-component container d-flex justify-content-center">
         <form method="post" asp-action="Login">
             <div class="card">
                 <div class="card-body">
 
-                    <h3>Admin Login</h3>
+                    <h3>EcoKonek Login</h3>
                     <hr />
 
                     <div class="mb-3">
@@ -38,19 +39,16 @@
                 </div>
             </div>
 
-            @* @if (!Model.IsSuccess && Model.Errors.Any())
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
             {
                 <br />
                 <div class="alert alert-danger d-flex align-items-center" role="alert">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <div>
-                        @foreach (var error in Model.Errors)
-                        {
-                            <div>@error</div>
-                        }
+                        <div>@ViewBag.ErrorMessage</div>
                     </div>
                 </div>
-            } *@
+            }
         </form>
     </div>
 </div>
