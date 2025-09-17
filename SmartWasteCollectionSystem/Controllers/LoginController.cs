@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartWasteCollectionSystem.Interface;
 using SmartWasteCollectionSystem.Models;
 using SmartWasteCollectionSystem.Service;
 using System.Security.Claims;

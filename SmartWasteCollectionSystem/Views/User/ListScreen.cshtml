@@ -1,0 +1,47 @@
+﻿@using SmartWasteCollectionSystem.Models
+@model ListScreenModel<UserSearchModel>
+@{
+    ViewData["Title"] = "User List Screen";
+}
+
+<Custom:ActionItems caption="Users"
+                    template="Default"
+                    id="UserID"
+                    table="UserTableID"
+                    controller="User"
+                    delete-action="Delete"
+                    edit-action="UserEdit">
+
+</Custom:ActionItems>
+
+<Custom:SearchForm id="UserSearchForm"
+                   controller="User"
+                   action="UserSearch">
+    <Custom:TextBox id="FirstName"
+                    label="First Name"
+                    type="text"
+                    value="@Model.SearchModel.FirstName"
+                    placeholder="Enter name">
+    </Custom:TextBox>
+
+    <Custom:TextBox id="LastName"
+                    label="Last Name"
+                    type="text"
+                    value="@Model.SearchModel.LastName"
+                    placeholder="Enter name">
+    </Custom:TextBox>
+</Custom:SearchForm>
+
+<Custom:Table id="UserTableID"
+              items="Model.Data"
+              count="Model.DataCount"
+              page="Model.PageMode"
+              selection-mode="Multiple"
+              property="UserId"
+              route="/User/ListScreen"
+              url="/User/UserEdit?UserId="
+              column=1>
+    <Table:Column property="Email" caption="Email"></Table:Column>
+    <Table:Column property="FirstName" caption="First Name"></Table:Column>
+    <Table:Column property="LastName" caption="Last Name"></Table:Column>
+</Custom:Table>

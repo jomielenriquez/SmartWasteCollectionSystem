@@ -1,0 +1,82 @@
+﻿@using SmartWasteCollectionSystem.Models
+@using System.Security.Claims
+@model EditScreenModel<User>
+@{
+    ViewData["Title"] = "User Edit Screen";
+}
+@if (Model.ErrorMessages != null)
+{
+    <br />
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+            @foreach (var error in Model.ErrorMessages)
+            {
+                <div>@error</div>
+            }
+        </div>
+    </div>
+}
+
+<div class="card mb-3">
+    <div class="card-header">User</div>
+    <div class="card-body">
+        <Custom:Form id="UserAccount"
+                     submit-tag="Save"
+                     controller="User"
+                     action="Save"
+                     cancel-redirect="/User/ListScreen">
+            <Custom:TextBox id="UserId"
+                            label="UserId"
+                            type="text"
+                            value="@Model.Data.UserId"
+                            is-hidden="true"
+                            placeholder="">
+            </Custom:TextBox>
+            <Custom:TextBox id="FirstName"
+                            label="First Name"
+                            type="text"
+                            value="@Model.Data.FirstName"
+                            placeholder="Enter First Name"
+                            is-required="true">
+            </Custom:TextBox>
+            <Custom:TextBox id="LastName"
+                            label="Last Name"
+                            type="text"
+                            value="@Model.Data.LastName"
+                            placeholder="Enter Last Name"
+                            is-required="true">
+            </Custom:TextBox>
+            <Custom:TextBox id="Email"
+                            label="Email"
+                            type="text"
+                            value="@Model.Data.Email"
+                            placeholder="Enter Email"
+                            is-required="true">
+            </Custom:TextBox>@* 
+            <Custom:TextBox id="Username"
+                            label="Username"
+                            type="text"
+                            value="@Model.Data.Username"
+                            placeholder="Enter Username"
+                            is-required="true">
+            </Custom:TextBox> *@
+            @{
+                var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                if ((!string.IsNullOrEmpty(userId) && new Guid(userId) == Model.Data.UserId) || Model.Data.UserId == Guid.Empty)
+                {
+
+                    <Custom:TextBox id="PasswordHash"
+                                    label="Password"
+                                    type="password"
+                                    value=""
+                                    placeholder="Enter Password"
+                                    is-helper-enabled="true"
+                                    helper-message="Enter a password to update, or leave it blank to skip.">
+                    </Custom:TextBox>
+                }
+            }
+
+        </Custom:Form>
+    </div>
+</div>

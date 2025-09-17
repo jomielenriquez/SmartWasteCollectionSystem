@@ -1,0 +1,27 @@
+﻿
+.SysCorePagination {
+    float: right;
+}
+
+.SysCorePaginationDiv {
+    height: 58px;
+}
+
+.SysCorePaginationStatus {
+    float: left;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+.SysCorePaginationDropdown {
+    width: 80px;
+}
+
+.SysCorePaginationDisplayInline {
+    display: inline-block;
+    padding-right: 5px;
+}
+
+.hidden {
+    display: none;
+}

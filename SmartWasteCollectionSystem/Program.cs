@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using SmartWasteCollectionSystem.Interface;
 using SmartWasteCollectionSystem.Models;
+using SmartWasteCollectionSystem.Repository;
 using SmartWasteCollectionSystem.Service;
 using System;
 
@@ -20,7 +22,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddDbContext<SwcsdbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
