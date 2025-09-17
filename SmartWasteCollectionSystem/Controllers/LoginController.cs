@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartWasteCollectionSystem.Models;
+using SmartWasteCollectionSystem.Service;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,10 +14,12 @@ namespace SmartWasteCollectionSystem.Controllers
     public class LoginController : Controller
     {
         private readonly SwcsdbContext _context;
+        private readonly EmailService _emailService;
 
-        public LoginController(SwcsdbContext context)
+        public LoginController(SwcsdbContext context, EmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
