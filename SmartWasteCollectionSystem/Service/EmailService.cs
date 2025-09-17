@@ -27,14 +27,14 @@ namespace SmartWasteCollectionSystem.Service
         {
             try
             {
-                var name = _configuration["Email:Name"];
-                var email = _configuration["Email:Email"];
-                var password = _configuration["Email:Password"];
+                //var name = _configuration["Email:Name"];
+                //var email = _configuration["Email:Email"];
+                //var password = _configuration["Email:Password"];
 
                 string smtpServer = "smtp.gmail.com";
                 int smtpPort = 587;
-                string smtpUser = _configuration["Email:Email"];
-                string smtpPass = _configuration["Email:Password"];
+                string smtpUser = _configuration["Email:Email"] ?? "";
+                string smtpPass = _configuration["Email:Password"] ?? "";
 
                 using (SmtpClient smtp = new SmtpClient(smtpServer, smtpPort))
                 {
@@ -74,8 +74,8 @@ namespace SmartWasteCollectionSystem.Service
             {
                 string smtpServer = "smtp.gmail.com";
                 int smtpPort = 587;
-                string smtpUser = _configuration["Email:Email"];
-                string smtpPass = _configuration["Email:Password"];
+                string smtpUser = _configuration["Email:Email"] ?? "";
+                string smtpPass = _configuration["Email:Password"] ?? "";
 
                 using (SmtpClient smtp = new SmtpClient(smtpServer, smtpPort))
                 {
