@@ -27,10 +27,6 @@ namespace SmartWasteCollectionSystem.Service
         {
             try
             {
-                //var name = _configuration["Email:Name"];
-                //var email = _configuration["Email:Email"];
-                //var password = _configuration["Email:Password"];
-
                 string smtpServer = "smtp.gmail.com";
                 int smtpPort = 587;
                 string smtpUser = _configuration["Email:Email"] ?? "";
