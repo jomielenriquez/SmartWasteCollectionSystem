@@ -1,0 +1,147 @@
+﻿@model SmartWasteCollectionSystem.Models.User
+@{
+    ViewData["Title"] = "EcoKonek Registration";
+}
+<style>
+    .card-body h3 {
+        text-align: center;
+    }
+
+    .card {
+        width: 300px;
+        margin-top: 10px;
+    }
+</style>
+<div>
+    <img src="~/image/icon.png" class="justify-content-center container bs-component container d-flex" style="width:140px;" />
+    <div class="well bs-component container d-flex justify-content-center">
+        <form method="post" asp-action="RegisterNewAccount">
+            <div class="card" style="border-top: 5px solid green">
+                <div class="card-body">
+
+                    <h3>EcoKonek Registration</h3>
+                    <hr />
+
+                    <div class="mb-3">
+                        <label for="FirstName" class="form-label">First Name</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="FirstName" 
+                               name="FirstName" 
+                               placeholder="First Name" 
+                               asp-for="@Model.FirstName"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="LastName" class="form-label">Last Name</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="LastName" 
+                               name="LastName" 
+                               placeholder="Last Name" 
+                               asp-for="@Model.LastName"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="LotNumber" class="form-label">Lot Number</label>
+                        <input type="text"
+                               class="form-control"
+                               id="LotNumber"
+                               name="LotNumber"
+                               placeholder="Lot Number"
+                               asp-for="@Model.LotNumber"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="BlockNumber" class="form-label">Block Number</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="BlockNumber" 
+                               name="BlockNumber" 
+                               placeholder="Block Number" 
+                               asp-for="@Model.BlockNumber"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="StreetName" class="form-label">Street Name</label>
+                        <input type="text" 
+                               class="form-control"
+                               id="StreetName"
+                               name="StreetName"
+                               placeholder="Street Name" 
+                               asp-for="@Model.StreetName">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ContactNumber" class="form-label">Contact Number</label>
+                        <input type="tel"
+                               class="form-control"
+                               id="ContactNumber"
+                               name="ContactNumber"
+                               placeholder="+639XXXXXXXXX"
+                               pattern="^\+63\d{10}$"
+                               title="Contact number must be in +63XXXXXXXXXX format"
+                               asp-for="@Model.ContactNumber"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="MoveInDate" class="form-label">Move-in Date</label>
+                        <input type="date"
+                               class="form-control"
+                               id="MoveInDate"
+                               name="MoveInDate"
+                               placeholder="Street Name"
+                               asp-for="@Model.MoveInDate"
+                               required>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">Email</label>
+                        <input type="text"
+                               class="form-control"
+                               id="Email"
+                               name="Email"
+                               placeholder="Email"
+                               asp-for="@Model.Email"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Password" class="form-label">Password</label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="Password"
+                               name="Password"
+                               placeholder="Password" 
+                               asp-for="@Model.Password"
+                               required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success"><i class="fa-solid fa-lock-open"></i> Register</button>
+                    </div>
+                    <hr />
+
+                    <a href="/Login/Index"><i class="fa-solid fa-circle-question"></i> Already have an account? Login</a>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <br />
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div>
+                        <div>@ViewBag.ErrorMessage</div>
+                    </div>
+                </div>
+            }
+        </form>
+    </div>
+</div>

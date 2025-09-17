@@ -23,6 +23,11 @@ namespace SmartWasteCollectionSystem.Controllers
             return View();
         }
 
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string username, string password)
         {
@@ -52,6 +57,27 @@ namespace SmartWasteCollectionSystem.Controllers
                 return View("Index");
             }
         }
+
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterNewAccount(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+                if (existingUser != null)
+                {
+                    ViewBag.ErrorMessage = "Email already exists.";
+                    return View("Register");
+                }
+                user.Password = ComputeMd5Hash(user.Password);
+                user.CreatedDate = DateTime.Now;
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Login");
+            }
+            return View("Register", user);
+        }
+
         [Authorize]
         public async Task<IActionResult> Logout()
         {
