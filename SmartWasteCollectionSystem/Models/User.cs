@@ -28,4 +28,6 @@ public partial class User
     public DateTime CreatedDate { get; set; }
 
     public Guid UserRoleId { get; set; }
+
+    public virtual UserRole UserRole { get; set; } = null!;
 }

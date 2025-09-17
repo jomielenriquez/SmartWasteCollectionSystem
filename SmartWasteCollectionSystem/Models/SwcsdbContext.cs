@@ -40,6 +40,11 @@ public partial class SwcsdbContext : DbContext
             entity.Property(e => e.MoveInDate).HasColumnType("datetime");
             entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.StreetName).HasMaxLength(50);
+
+            entity.HasOne(d => d.UserRole).WithMany(p => p.Users)
+                .HasForeignKey(d => d.UserRoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Users_UserRoleID");
         });
 
         modelBuilder.Entity<UserRole>(entity =>
