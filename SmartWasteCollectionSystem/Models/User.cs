@@ -26,4 +26,6 @@ public partial class User
     public string Password { get; set; } = null!;
 
     public DateTime CreatedDate { get; set; }
+
+    public Guid UserRoleId { get; set; }
 }

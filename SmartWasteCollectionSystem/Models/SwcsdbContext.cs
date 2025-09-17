@@ -17,11 +17,17 @@ public partial class SwcsdbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserRole> UserRoles { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=LAPTOP-8QU1FPT9\\SQLEXPRESS;Database=SWCSDB;Trusted_Connection=True;TrustServerCertificate=True;");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId);//.HasName("PK__Users__1788CCACE57243DF");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACE57243DF");
 
             entity.Property(e => e.UserId)
                 .HasDefaultValueSql("(newid())")
@@ -38,6 +44,21 @@ public partial class SwcsdbContext : DbContext
             entity.Property(e => e.MoveInDate).HasColumnType("datetime");
             entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.StreetName).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            entity.HasKey(e => e.UserRoleId).HasName("PK__UserRole__3D978A552FCAB013");
+
+            entity.ToTable("UserRole");
+
+            entity.Property(e => e.UserRoleId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("UserRoleID");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.RoleName).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);
