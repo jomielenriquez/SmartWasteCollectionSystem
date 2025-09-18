@@ -38,7 +38,11 @@ namespace SmartWasteCollectionSystem.Repository
             result.IsSuccess = true;
             result.Data = _userRepository.GetByCondition(
                 x => x.UserId == userId,
-                x => x.UserRole).FirstOrDefault() ?? new User();
+                x => x.UserRole).FirstOrDefault() ?? new User()
+                {
+                    MoveInDate = DateTime.Now,
+                    CreatedDate = DateTime.Now
+                };
             return result;
         }
 
@@ -67,11 +71,17 @@ namespace SmartWasteCollectionSystem.Repository
                 var userResult = _userRepository.GetById(user.UserId);
                 userResult.FirstName = user.FirstName;
                 userResult.LastName = user.LastName;
+                userResult.BlockNumber = user.BlockNumber;
+                userResult.LotNumber = user.LotNumber;
+                userResult.StreetName = user.StreetName;
+                userResult.ContactNumber = user.ContactNumber;
+                userResult.MoveInDate = user.MoveInDate;
                 userResult.Email = user.Email;
                 userResult.Password = !string.IsNullOrEmpty(user.Password)
                     ? ComputeMd5Hash(user.Password)
-                    : user.Password;
-                result.Data = _userRepository.Update(user);
+                    : userResult.Password;
+                userResult.UserRoleId = user.UserRoleId;
+                result.Data = _userRepository.Update(userResult);
             }
 
             return result;
@@ -112,7 +122,7 @@ namespace SmartWasteCollectionSystem.Repository
             result.DeleteCount = 0;
             if (userIds != null && userIds.Length > 0)
             {
-                int deletedCount = _userRepository.DeleteWithIds(userIds, "UserID");
+                int deletedCount = _userRepository.DeleteWithIds(userIds, "UserId");
                 result.DeleteCount = deletedCount;
                 result.Message = $"{deletedCount} user(s) deleted successfully.";
             }
@@ -138,7 +148,7 @@ namespace SmartWasteCollectionSystem.Repository
 
             var listScreen = new ListScreenModel<UserSearchModel>()
             {
-                Data = _userRepository.GetAllWithOptions(pageModel, filter).Cast<object>().ToList(),
+                Data = _userRepository.GetAllWithOptionsAndIncludes(pageModel, filter, "UserRole").Cast<object>().ToList(),
                 Page = 1,
                 PageSize = pageModel.PageSize,
                 DataCount = _userRepository.GetCountWithOptions(pageModel, filter),

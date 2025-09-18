@@ -31,17 +31,19 @@
                     placeholder="Enter name">
     </Custom:TextBox>
 </Custom:SearchForm>
-
-<Custom:Table id="UserTableID"
-              items="Model.Data"
-              count="Model.DataCount"
-              page="Model.PageMode"
-              selection-mode="Multiple"
-              property="UserId"
-              route="/User/ListScreen"
-              url="/User/UserEdit?UserId="
-              column=1>
-    <Table:Column property="Email" caption="Email"></Table:Column>
-    <Table:Column property="FirstName" caption="First Name"></Table:Column>
-    <Table:Column property="LastName" caption="Last Name"></Table:Column>
-</Custom:Table>
+<div class="table-responsive">
+    <Custom:Table id="UserTableID"
+                  items="Model.Data"
+                  count="Model.DataCount"
+                  page="Model.PageMode"
+                  selection-mode="Multiple"
+                  property="UserId"
+                  route="/User/ListScreen"
+                  url="/User/UserEdit?UserId="
+                  column=1>
+        <Table:Column property="Email" caption="Email"></Table:Column>
+        <Table:Column property="FirstName" caption="First Name"></Table:Column>
+        <Table:Column property="LastName" caption="Last Name"></Table:Column>
+        <Table:Column property="UserRole.RoleName" caption="Role"></Table:Column>
+    </Custom:Table>
+</div>

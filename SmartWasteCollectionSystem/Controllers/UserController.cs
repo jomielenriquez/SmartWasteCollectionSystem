@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartWasteCollectionSystem.Interface;
 using SmartWasteCollectionSystem.Models;
@@ -18,12 +19,14 @@ namespace SmartWasteCollectionSystem.Controllers
             _roleService = roleService;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult ListScreen(PageModel pageModel)
         {
             var result = _user.GetList(pageModel);
             return View(result.Data);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult UserSearch(UserSearchModel userSearchModel)
         {
@@ -33,6 +36,7 @@ namespace SmartWasteCollectionSystem.Controllers
             return RedirectToAction("ListScreen", "User", pageModel);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         public int DeleteUser([FromBody] Guid[] selected)
         {
@@ -40,6 +44,7 @@ namespace SmartWasteCollectionSystem.Controllers
             return result.DeleteCount;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult UserEdit(User user)
         {
             var admissionUserResult = _user.GetUserById(user.UserId);
@@ -56,6 +61,7 @@ namespace SmartWasteCollectionSystem.Controllers
             return View(editScreen);
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult Save(User user)
         {
             var result = _user.SaveUser(user);

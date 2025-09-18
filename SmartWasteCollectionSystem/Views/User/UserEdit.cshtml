@@ -47,26 +47,55 @@
                             placeholder="Enter Last Name"
                             is-required="true">
             </Custom:TextBox>
+            <Custom:TextBox id="BlockNumber"
+                            label="Block Number"
+                            type="text"
+                            value="@Model.Data.BlockNumber"
+                            placeholder="Enter block number"
+                            is-required="true">
+            </Custom:TextBox>
+            <Custom:TextBox id="LotNumber"
+                            label="Lot Number"
+                            type="text"
+                            value="@Model.Data.LotNumber"
+                            placeholder="Enter lot number"
+                            is-required="true">
+            </Custom:TextBox>
+            <Custom:TextBox id="StreetName"
+                            label="Street Name"
+                            type="text"
+                            value="@Model.Data.StreetName"
+                            placeholder="Enter street name">
+            </Custom:TextBox>
+            <Custom:TextBox id="ContactNumber"
+                            label="Contact Number"
+                            type="text"
+                            pattern="^\+63\d{10}$"
+                            value="@Model.Data.ContactNumber"
+                            placeholder="+639XXXXXXXXX"
+                            is-required="true">
+            </Custom:TextBox>
+            <Custom:TextBox id="MoveInDate"
+                            label="Move-in Date"
+                            type="date"
+                            value="@Model.Data.MoveInDate.ToString("yyyy-MM-dd")"
+                            placeholder="Enter move-in date"
+                            is-required="true">
+            </Custom:TextBox>
             <Custom:TextBox id="Email"
                             label="Email"
-                            type="text"
+                            type="email"
                             value="@Model.Data.Email"
-                            placeholder="Enter Email"
+                            placeholder="Enter email"
                             is-required="true">
-            </Custom:TextBox>@* 
-            <Custom:TextBox id="Username"
-                            label="Username"
-                            type="text"
-                            value="@Model.Data.Username"
-                            placeholder="Enter Username"
-                            is-required="true">
-            </Custom:TextBox> *@
+            </Custom:TextBox>
+
             @{
                 var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
                 if ((!string.IsNullOrEmpty(userId) && new Guid(userId) == Model.Data.UserId) || Model.Data.UserId == Guid.Empty)
                 {
 
-                    <Custom:TextBox id="PasswordHash"
+                    <Custom:TextBox id="Password"
                                     label="Password"
                                     type="password"
                                     value=""
@@ -76,6 +105,14 @@
                     </Custom:TextBox>
                 }
             }
+            <Custom:Dropdown items="@Model.UserRoles"
+                             id="UserRoleId"
+                             label="UserRole"
+                             key-property="UserRoleId"
+                             value-property="RoleName"
+                             selected-value="@Model.Data.UserRoleId"
+                             is-required="true">
+            </Custom:Dropdown>
 
         </Custom:Form>
     </div>

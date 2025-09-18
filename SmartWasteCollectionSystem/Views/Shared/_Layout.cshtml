@@ -5,10 +5,18 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/lib/fontawesome-free-6.7.2-web/fontawesome-free-6.7.2-web/css/fontawesome.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome-free-6.7.2-web/fontawesome-free-6.7.2-web/css/brands.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome-free-6.7.2-web/fontawesome-free-6.7.2-web/css/solid.css" rel="stylesheet" />
     <title>@ViewData["Title"] - SmartWasteCollectionSystem</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/taghelper/css/taghelper.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SmartWasteCollectionSystem.styles.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </head>
 <body>
     <header>
@@ -19,7 +27,6 @@
                     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
                     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
                     var roles = User.FindFirstValue(ClaimTypes.Role);
-                    var test = "test";
                 }
 
                 @if(roles != null)
@@ -30,12 +37,12 @@
                     </button>
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
+                            @if (roles == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="User" asp-action="ListScreen"><i class="fa-solid fa-user"></i> Users</a>
+                                </li>
+                            }
                         </ul>
                         <ul class="nav">
                             <li class="nav-item"><a href="/User/UserEdit?UserId=@User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value" class="nav-link link-body-emphasis px-2 text-light">@(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value)</a></li>
@@ -57,10 +64,6 @@
             &copy; 2025 - Smart Waste Collection System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
 
