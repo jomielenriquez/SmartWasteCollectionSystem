@@ -33,5 +33,7 @@ public partial class User
 
     public decimal? Longitude { get; set; }
 
+    public virtual ICollection<MonthlyDue> MonthlyDues { get; set; } = new List<MonthlyDue>();
+
     public virtual UserRole UserRole { get; set; } = null!;
 }

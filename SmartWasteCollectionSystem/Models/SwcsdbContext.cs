@@ -15,12 +15,35 @@ public partial class SwcsdbContext : DbContext
     {
     }
 
+    public virtual DbSet<MonthlyDue> MonthlyDues { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<MonthlyDue>(entity =>
+        {
+            entity.HasKey(e => e.MonthlyDueId);//.HasName("PK__MonthlyD__F025985FB8301311");
+
+            entity.Property(e => e.MonthlyDueId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("MonthlyDueID");
+            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DueDate).HasColumnType("datetime");
+            entity.Property(e => e.PaidDate).HasColumnType("datetime");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.MonthlyDues)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MonthlyDu__UserI__5535A963");
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId);//.HasName("PK__Users__1788CCACE57243DF");
