@@ -30,7 +30,11 @@ namespace SmartWasteCollectionSystem.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            return View(new User()
+            {
+                MoveInDate = DateTime.Now,
+                CreatedDate = DateTime.Now
+            });
         }
 
         [ValidateAntiForgeryToken]

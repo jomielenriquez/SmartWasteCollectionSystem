@@ -2,19 +2,30 @@
 @{
     ViewData["Title"] = "EcoKonek Registration";
 }
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+</style>
 <style>
     .card-body h3 {
         text-align: center;
     }
 
     .card {
-        width: 300px;
+        /* width: 300px; */
         margin-top: 10px;
     }
 </style>
 <div>
     <img src="~/image/icon.png" class="justify-content-center container bs-component container d-flex" style="width:140px;" />
-    <div class="well bs-component container d-flex justify-content-center">
+    <div class="">
         <form method="post" asp-action="RegisterNewAccount">
             <div class="card" style="border-top: 5px solid green">
                 <div class="card-body">
@@ -22,107 +33,144 @@
                     <h3>EcoKonek Registration</h3>
                     <hr />
 
-                    <div class="mb-3">
-                        <label for="FirstName" class="form-label">First Name</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="FirstName" 
-                               name="FirstName" 
-                               placeholder="First Name" 
-                               asp-for="@Model.FirstName"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="FirstName" class="form-label col-sm-4 col-form-label">First Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="FirstName" 
+                                   name="FirstName" 
+                                   placeholder="First Name" 
+                                   asp-for="@Model.FirstName"
+                                   required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="LastName" class="form-label">Last Name</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="LastName" 
-                               name="LastName" 
-                               placeholder="Last Name" 
-                               asp-for="@Model.LastName"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="LastName" class="form-label col-sm-4 col-form-label">Last Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="LastName" 
+                                   name="LastName" 
+                                   placeholder="Last Name" 
+                                   asp-for="@Model.LastName"
+                                   required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="LotNumber" class="form-label">Lot Number</label>
-                        <input type="text"
-                               class="form-control"
-                               id="LotNumber"
-                               name="LotNumber"
-                               placeholder="Lot Number"
-                               asp-for="@Model.LotNumber"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="LotNumber" class="form-label col-sm-4 col-form-label">Lot Number</label>
+                        <div class="col-sm-8">
+                            <input type="text"
+                                   class="form-control"
+                                   id="LotNumber"
+                                   name="LotNumber"
+                                   placeholder="Lot Number"
+                                   asp-for="@Model.LotNumber"
+                                   required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="BlockNumber" class="form-label">Block Number</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="BlockNumber" 
-                               name="BlockNumber" 
-                               placeholder="Block Number" 
-                               asp-for="@Model.BlockNumber"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="BlockNumber" class="form-label col-sm-4 col-form-label">Block Number</label>
+                        <div class="col-sm-8">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="BlockNumber" 
+                                   name="BlockNumber" 
+                                   placeholder="Block Number" 
+                                   asp-for="@Model.BlockNumber"
+                                   required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="StreetName" class="form-label">Street Name</label>
-                        <input type="text" 
-                               class="form-control"
-                               id="StreetName"
-                               name="StreetName"
-                               placeholder="Street Name" 
-                               asp-for="@Model.StreetName">
+                    <div class="mb-3 row">
+                        <label for="StreetName" class="form-label col-sm-4 col-form-label">Street Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" 
+                                   class="form-control"
+                                   id="StreetName"
+                                   name="StreetName"
+                                   placeholder="Street Name" 
+                                   asp-for="@Model.StreetName">
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="ContactNumber" class="form-label">Contact Number</label>
-                        <input type="tel"
-                               class="form-control"
-                               id="ContactNumber"
-                               name="ContactNumber"
-                               placeholder="+639XXXXXXXXX"
-                               pattern="^\+63\d{10}$"
-                               title="Contact number must be in +63XXXXXXXXXX format"
-                               asp-for="@Model.ContactNumber"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="ContactNumber" class="form-label col-sm-4 col-form-label">Contact Number</label>
+                        <div class="col-sm-8">
+                            <input type="tel"
+                                   class="form-control"
+                                   id="ContactNumber"
+                                   name="ContactNumber"
+                                   placeholder="+639XXXXXXXXX"
+                                   pattern="^\+63\d{10}$"
+                                   title="Contact number must be in +63XXXXXXXXXX format"
+                                   asp-for="@Model.ContactNumber"
+                                   required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="MoveInDate" class="form-label">Move-in Date</label>
-                        <input type="date"
-                               class="form-control"
-                               id="MoveInDate"
-                               name="MoveInDate"
-                               placeholder="Street Name"
-                               asp-for="@Model.MoveInDate"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="MoveInDate" class="form-label col-sm-4 col-form-label">Move-in Date</label>
+                        <div class="col-sm-8">
+                            <input type="date"
+                                   class="form-control"
+                                   id="MoveInDate"
+                                   name="MoveInDate"
+                                   placeholder="Street Name"
+                                   asp-for="@Model.MoveInDate"
+                                   required>
+                        </div>
                     </div>
 
 
-                    <div class="mb-3">
-                        <label for="Email" class="form-label">Email</label>
-                        <input type="text"
-                               class="form-control"
-                               id="Email"
-                               name="Email"
-                               placeholder="Email"
-                               asp-for="@Model.Email"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="Email" class="form-label col-sm-4 col-form-label">Email</label>
+                        <div class="col-sm-8">
+                            <input type="text"
+                                   class="form-control"
+                                   id="Email"
+                                   name="Email"
+                                   placeholder="Email"
+                                   asp-for="@Model.Email"
+                                   required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="Password" class="form-label">Password</label>
-                        <input type="password" 
-                               class="form-control" 
-                               id="Password"
-                               name="Password"
-                               placeholder="Password" 
-                               asp-for="@Model.Password"
-                               required>
+                    <div class="mb-3 row">
+                        <label for="Password" class="form-label col-sm-4 col-form-label">Password</label>
+                        <div class="col-sm-8">
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="Password"
+                                   name="Password"
+                                   placeholder="Password" 
+                                   asp-for="@Model.Password"
+                                   required>
+                        </div>
                     </div>
-                    
+
+                    <input type="hidden"
+                            class="form-control"
+                            id="Latitude"
+                            name="Latitude"
+                            placeholder="Latitude"
+                            asp-for="@Model.Latitude">
+
+                    <input type="hidden"
+                           class="form-control"
+                           id="Longitude"
+                           name="Longitude"
+                           placeholder="Longitude"
+                           asp-for="@Model.Longitude">
+
+                    <div id="LocationPicker">
+                        <h3>Select Location</h3>
+                        <div id="map"></div>
+                    </div>
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-success"><i class="fa-solid fa-lock-open"></i> Register</button>
                     </div>
@@ -145,3 +193,52 @@
         </form>
     </div>
 </div>
+
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    $(document).ready(function () {
+    });
+        setupMap();
+
+    function setupMap(){
+        var latitude = 14.5995;
+        var longitude = 120.9842;
+
+        // Initial map center (example: Manila)
+        console.log(@Model.Longitude);
+
+        var map = L.map('map').setView([latitude, longitude], 13);
+
+        // Add OpenStreetMap tiles (free!)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add a draggable marker
+        var marker = L.marker([latitude, longitude], { draggable: true }).addTo(map);
+
+        // Update hidden inputs when marker is moved
+        function updateLatLng(lat, lng) {
+            document.getElementById("Latitude").value = lat;
+            document.getElementById("Longitude").value = lng;
+        }
+
+        // Set initial values
+        updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+
+        // On marker drag
+        marker.on('dragend', function (e) {
+            var latlng = e.target.getLatLng();
+            updateLatLng(latlng.lat, latlng.lng);
+        });
+
+        // Allow click on map to move marker
+        map.on('click', function (e) {
+            marker.setLatLng(e.latlng);
+            updateLatLng(e.latlng.lat, e.latlng.lng);
+        });
+    }
+</script>
