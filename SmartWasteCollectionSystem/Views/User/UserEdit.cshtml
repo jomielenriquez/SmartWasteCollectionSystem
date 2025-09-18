@@ -18,6 +18,18 @@
     </div>
 }
 
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+</style>
+
 <div class="card mb-3">
     <div class="card-header">User</div>
     <div class="card-body">
@@ -114,6 +126,92 @@
                              is-required="true">
             </Custom:Dropdown>
 
+            <Custom:TextBox id="Latitude"
+                            label="Latitude"
+                            type="text"
+                            value="@Model.Data.Latitude"
+                            placeholder=""
+                            is-hidden="true">
+            </Custom:TextBox>
+            <Custom:TextBox id="Longitude"
+                            label="Longitude"
+                            type="text"
+                            value="@Model.Data.Longitude"
+                            placeholder=""
+                            is-hidden="true">
+            </Custom:TextBox>
+
         </Custom:Form>
     </div>
 </div>
+
+<div id="LocationPicker">
+    <h3>Select Location</h3>
+    <div id="map"></div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#UserRoleId").on("change", function () {
+            var selectedText = $(this).find("option:selected").text();
+            if(selectedText == "Home Owner"){
+                $("#LocationPicker").css("display","");
+            }
+            else{
+                $("#LocationPicker").css("display","none");
+            }
+        });
+        var userRole = '@(Model.Data?.UserRole?.RoleName ?? "Home Owner")';
+
+        if(userRole == "Home Owner"){
+            $("#LocationPicker").css("display","");
+        }
+        else{
+            $("#LocationPicker").css("display","none");
+        }
+
+        setupMap();
+    });
+
+    function setupMap(){
+        var latitude = @(Model.Data.Latitude.HasValue? Model.Data.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "14.5995");
+        var longitude = @(Model.Data.Longitude.HasValue? Model.Data.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "120.9842");
+
+        // Initial map center (example: Manila)
+        console.log(@Model.Data.Longitude);
+
+        var map = L.map('map').setView([latitude, longitude], 13);
+
+        // Add OpenStreetMap tiles (free!)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add a draggable marker
+        var marker = L.marker([latitude, longitude], { draggable: true }).addTo(map);
+
+        // Update hidden inputs when marker is moved
+        function updateLatLng(lat, lng) {
+            document.getElementById("Latitude").value = lat;
+            document.getElementById("Longitude").value = lng;
+        }
+
+        // Set initial values
+        updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+
+        // On marker drag
+        marker.on('dragend', function (e) {
+            var latlng = e.target.getLatLng();
+            updateLatLng(latlng.lat, latlng.lng);
+        });
+
+        // Allow click on map to move marker
+        map.on('click', function (e) {
+            marker.setLatLng(e.latlng);
+            updateLatLng(e.latlng.lat, e.latlng.lng);
+        });
+    }
+</script>

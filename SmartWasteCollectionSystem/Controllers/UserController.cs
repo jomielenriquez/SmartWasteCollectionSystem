@@ -47,10 +47,10 @@ namespace SmartWasteCollectionSystem.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult UserEdit(User user)
         {
-            var admissionUserResult = _user.GetUserById(user.UserId);
+            var result = _user.GetUserById(user.UserId);
             var editScreen = new EditScreenModel<User>()
             {
-                Data = admissionUserResult.Data,
+                Data = result.Data,
                 UserRoles = _roleService.GetAll().Cast<object>().ToList()
             };
             if (user.UserId != Guid.Empty)

@@ -81,6 +81,8 @@ namespace SmartWasteCollectionSystem.Repository
                     ? ComputeMd5Hash(user.Password)
                     : userResult.Password;
                 userResult.UserRoleId = user.UserRoleId;
+                userResult.Latitude = Math.Round(user.Latitude ?? 0, 6);
+                userResult.Longitude = Math.Round(user.Longitude ?? 0, 6);
                 result.Data = _userRepository.Update(userResult);
             }
 
