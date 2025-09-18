@@ -12,3 +12,62 @@
 {
     <h1>@(user.FirstName + " " + user.LastName)</h1>
 }
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+</style>
+
+<h3>Select Location</h3>
+<div id="map"></div>
+
+<form method="post" action="/SaveLocation">
+    <input type="hidden" id="Latitude" name="Latitude" />
+    <input type="hidden" id="Longitude" name="Longitude" />
+
+    <button type="submit">Save Location</button>
+</form>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    // Initial map center (example: Manila)
+    var map = L.map('map').setView([14.5995, 120.9842], 13);
+
+    // Add OpenStreetMap tiles (free!)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add a draggable marker
+    var marker = L.marker([14.5995, 120.9842], { draggable: true }).addTo(map);
+
+    // Update hidden inputs when marker is moved
+    function updateLatLng(lat, lng) {
+        document.getElementById("Latitude").value = lat;
+        document.getElementById("Longitude").value = lng;
+    }
+
+    // Set initial values
+    updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+
+    // On marker drag
+    marker.on('dragend', function (e) {
+        var latlng = e.target.getLatLng();
+        updateLatLng(latlng.lat, latlng.lng);
+    });
+
+    // Allow click on map to move marker
+    map.on('click', function (e) {
+        marker.setLatLng(e.latlng);
+        updateLatLng(e.latlng.lat, e.latlng.lng);
+    });
+</script>

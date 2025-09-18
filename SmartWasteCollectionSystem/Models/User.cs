@@ -29,5 +29,9 @@ public partial class User
 
     public Guid UserRoleId { get; set; }
 
+    public decimal? Latitude { get; set; }
+
+    public decimal? Longitude { get; set; }
+
     public virtual UserRole UserRole { get; set; } = null!;
 }
