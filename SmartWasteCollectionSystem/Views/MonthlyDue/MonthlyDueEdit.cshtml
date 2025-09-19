@@ -1,0 +1,94 @@
+﻿@using SmartWasteCollectionSystem.Models
+@using System.Security.Claims
+@model EditScreenModel<MonthlyDue>
+@{
+    ViewData["Title"] = "User Edit Screen";
+}
+@if (Model.ErrorMessages != null)
+{
+    <br />
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+            @foreach (var error in Model.ErrorMessages)
+            {
+                <div>@error</div>
+            }
+        </div>
+    </div>
+}
+
+<div class="card mb-3">
+    <div class="card-header">Payments</div>
+    <div class="card-body">
+        <Custom:Form id="MonthlyDue"
+                     submit-tag="Save"
+                     controller="MonthlyDue"
+                     action="Save"
+                     cancel-redirect="/MonthlyDue/ListScreen">
+
+            <Custom:TextBox id="MonthlyDueId"
+                            label="MonthlyDueId"
+                            type="text"
+                            value="@Model.Data.MonthlyDueId"
+                            is-hidden="true"
+                            placeholder="">
+            </Custom:TextBox>
+
+            <Custom:Dropdown items="@Model.Users"
+                             id="UserId"
+                             label="User"
+                             key-property="UserId"
+                             value-property="FullName"
+                             selected-value="@Model.Data.UserId"
+                             is-required="true">
+            </Custom:Dropdown>
+
+            <Custom:TextBox id="Amount"
+                            label="Amount"
+                            type="number"
+                            value="@Model.Data.Amount"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="StarDate"
+                            label="Start Date"
+                            type="date"
+                            value="@Model.Data.StarDate.ToString("yyyy-MM-dd")"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="EndDate"
+                            label="End Date"
+                            type="date"
+                            value="@Model.Data.EndDate.ToString("yyyy-MM-dd")"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="DueDate"
+                            label="DueDate"
+                            type="date"
+                            value="@Model.Data.DueDate.ToString("yyyy-MM-dd")"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:CheckBox id="IsPaid"
+                             label="Is Paid"
+                             is-checked="@Model.Data.IsPaid"
+                             value="@Model.Data.IsPaid">
+            </Custom:CheckBox>
+
+            <Custom:TextBox id="PaidDate"
+                            label="PaidDate"
+                            type="date"
+                            value="@(Model.Data.PaidDate ?? DateTime.Now).ToString("yyyy-MM-dd")"
+                            placeholder="">
+            </Custom:TextBox>
+
+        </Custom:Form>
+    </div>
+</div>

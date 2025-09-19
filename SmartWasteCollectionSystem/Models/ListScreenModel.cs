@@ -8,8 +8,6 @@
         public int DataCount { get; set; }
         public PageModel PageMode { get; set; }
         public T SearchModel { get; set; }
-        public List<object> Semester { get; set; }
-        public List<object> Sem { get; set; }
-        public List<object> Courses { get; set; }
+        public List<object> User { get; set; }
     }
 }

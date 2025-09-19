@@ -1,0 +1,54 @@
+﻿@using SmartWasteCollectionSystem.Models
+@model ListScreenModel<MonthlyDueSearchModel>
+@{
+    ViewData["Title"] = "Payment Screen";
+}
+
+<Custom:ActionItems caption="Payments"
+                    template="Default"
+                    id="MonthlyDue"
+                    table="MonthlyDueID"
+                    controller="MonthlyDue"
+                    delete-action="Delete"
+                    edit-action="MonthlyDueEdit">
+
+</Custom:ActionItems>
+
+<Custom:SearchForm id="MonthlyDueSearchForm"
+                   controller="MonthlyDue"
+                   action="MonthlyDueSearch">
+    <Custom:Dropdown items="@Model.User"
+                     id="UserId"
+                     label="User"
+                     key-property="UserId"
+                     value-property="FullName"
+                     selected-value="@Model.SearchModel.UserId">
+    </Custom:Dropdown>
+    <Custom:CheckBox id="IsPaid"
+                     label="Is Paid"
+                     is-checked="@Model.SearchModel.IsPaid"
+                     value="@Model.SearchModel.IsPaid">
+    </Custom:CheckBox>
+</Custom:SearchForm>
+
+<div class="table-responsive">
+    <Custom:Table id="MonthlyDueID"
+                  items="Model.Data"
+                  count="Model.DataCount"
+                  page="Model.PageMode"
+                  selection-mode="Multiple"
+                  property="MonthlyDueId"
+                  route="/MonthlyDue/ListScreen"
+                  url="/MonthlyDue/MonthlyDueEdit?MonthlyDueId="
+                  column=1>
+        <Table:Column property="DueDate" caption="Due Date"></Table:Column>
+        <Table:Column property="User.FirstName" caption="First Name"></Table:Column>
+        <Table:Column property="User.LastName" caption="Last Name"></Table:Column>
+        <Table:Column property="StarDate" caption="Start Date"></Table:Column>
+        <Table:Column property="EndDate" caption="End Date"></Table:Column>
+        <Table:Column property="PaidDate" caption="Date of Payment"></Table:Column>
+        <Table:Column property="Amount" caption="Amount"></Table:Column>
+        <Table:Column property="IsPaid" caption="Is Paid"></Table:Column>
+        <Table:Column property="CreatedDate" caption="Created Date"></Table:Column>
+    </Custom:Table>
+</div>

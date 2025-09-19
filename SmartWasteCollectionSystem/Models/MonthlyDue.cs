@@ -19,5 +19,9 @@ public partial class MonthlyDue
 
     public DateTime CreatedDate { get; set; }
 
+    public DateTime StarDate { get; set; }
+
+    public DateTime EndDate { get; set; }
+
     public virtual User User { get; set; } = null!;
 }
