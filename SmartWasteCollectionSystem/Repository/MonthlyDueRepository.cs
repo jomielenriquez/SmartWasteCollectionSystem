@@ -78,12 +78,12 @@ namespace SmartWasteCollectionSystem.Repository
             {
                 int deletedCount = _monthlyDueRepository.DeleteWithIds(monthlyDueIds, "MonthlyDueId");
                 result.DeleteCount = deletedCount;
-                result.Message = $"{deletedCount} user(s) deleted successfully.";
+                result.Message = $"{deletedCount} payment(s) deleted successfully.";
             }
             else
             {
                 result.IsSuccess = false;
-                result.Message = "No users selected for deletion.";
+                result.Message = "No payment selected for deletion.";
             }
             return result;
         }
