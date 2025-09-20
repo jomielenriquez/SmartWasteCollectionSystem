@@ -7,3 +7,25 @@
     <h1 class="display-4">DashBoard - WIP</h1>
     <p>Working in progress</p>
 </div>
+
+<!-- CKEditor 5 Classic Build -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+
+<textarea name="AnnouncementMessage" id="editor" rows="10" cols="80">
+    Write your announcement here...
+</textarea>
+
+<script>
+    let editorInstance;
+
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .then(editor => {
+            editorInstance = editor;
+        });
+
+    function getEditorValue() {
+        console.log(editorInstance.getData());
+    }
+</script>
