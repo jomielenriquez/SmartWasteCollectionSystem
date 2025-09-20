@@ -15,7 +15,11 @@ public partial class SwcsdbContext : DbContext
     {
     }
 
+    public virtual DbSet<Announcement> Announcements { get; set; }
+
     public virtual DbSet<DayOfWeek> DayOfWeeks { get; set; }
+
+    public virtual DbSet<Email> Emails { get; set; }
 
     public virtual DbSet<FrequencyType> FrequencyTypes { get; set; }
 
@@ -29,6 +33,18 @@ public partial class SwcsdbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Announcement>(entity =>
+        {
+            entity.HasKey(e => e.AnnouncementId);//.HasName("PK__Announce__9DE44574B1F6A4C6");
+
+            entity.Property(e => e.AnnouncementId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Title).HasMaxLength(200);
+        });
+
         modelBuilder.Entity<DayOfWeek>(entity =>
         {
             entity.HasKey(e => e.DayOfWeekId);//.HasName("PK__DayOfWee__01AA8DDFF2F0D8FA");
@@ -39,6 +55,18 @@ public partial class SwcsdbContext : DbContext
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("DayOfWeekID");
             entity.Property(e => e.Day).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Email>(entity =>
+        {
+            entity.HasKey(e => e.EmailId);//.HasName("PK__Emails__7ED91ACFBFB55AA5");
+
+            entity.Property(e => e.EmailId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SentDate).HasColumnType("datetime");
+            entity.Property(e => e.Title).HasMaxLength(200);
         });
 
         modelBuilder.Entity<FrequencyType>(entity =>
