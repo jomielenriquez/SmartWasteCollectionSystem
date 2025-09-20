@@ -98,7 +98,6 @@ namespace SmartWasteCollectionSystem.Repository
             Expression<Func<MonthlyDue, bool>> filter = x =>
                 (
                     (search.UserId == Guid.Empty || x.UserId == search.UserId)
-                    && (search.IsPaid == null || x.IsPaid == search.IsPaid)
                 );
 
             var listScreen = new ListScreenModel<MonthlyDueSearchModel>()

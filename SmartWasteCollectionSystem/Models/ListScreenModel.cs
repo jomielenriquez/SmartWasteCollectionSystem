@@ -9,5 +9,7 @@
         public PageModel PageMode { get; set; }
         public T SearchModel { get; set; }
         public List<object> User { get; set; }
+        public List<object> DayOfWeek { get; set; }
+        public List<object> FrequencyType { get; set; }
     }
 }

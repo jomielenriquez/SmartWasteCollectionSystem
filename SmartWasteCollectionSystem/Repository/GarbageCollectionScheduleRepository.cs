@@ -44,15 +44,15 @@ namespace SmartWasteCollectionSystem.Repository
             {
                 errors.Add("Frequency type is required.");
             }
-            if (scheduleData.CollectionTime != null)
+            if (scheduleData.CollectionTime == null)
             {
                 errors.Add("Collection time is required.");
             }
-            if (scheduleData.EffectiveFrom != null)
+            if (scheduleData.EffectiveFrom == null)
             {
                 errors.Add("Effective from is required.");
             }
-            if (scheduleData.EffectiveTo != null)
+            if (scheduleData.EffectiveTo == null)
             {
                 errors.Add("Effective to is required.");
             }
@@ -76,6 +76,7 @@ namespace SmartWasteCollectionSystem.Repository
 
             if (garbageCollectionSchedule.GarbageCollectionScheduleId == Guid.Empty)
             {
+                garbageCollectionSchedule.CreatedDate = DateTime.Now;
                 result.Data = _garbageCollectionScheduleRepository.Save(garbageCollectionSchedule);
             }
             else

@@ -1,0 +1,49 @@
+﻿@using SmartWasteCollectionSystem.Models
+@model ListScreenModel<GarbageCollectionScheduleSearchModel>
+@{
+    ViewData["Title"] = "Garbage Collection Schedule Screen";
+}
+
+<Custom:ActionItems caption="Garbage Colletion Schedule"
+                    template="Default"
+                    id="GarbageCollectionSchedule"
+                    table="GarbageCollectionScheduleID"
+                    controller="GarbageCollectionSchedule"
+                    delete-action="Delete"
+                    edit-action="GarbageCollectionScheduleEdit">
+
+</Custom:ActionItems>
+
+<Custom:SearchForm id="GarbageCollectionScheduleSearchForm"
+                   controller="GarbageCollectionSchedule"
+                   action="GarbageCollectionScheduleSearch">
+    <Custom:Dropdown items="@Model.DayOfWeek"
+                     id="DayOfWeekId"
+                     label="Day Of Week"
+                     key-property="DayOfWeekId"
+                     value-property="Day"
+                     selected-value="@Model.SearchModel.DayOfWeekId">
+    </Custom:Dropdown>
+    <Custom:Dropdown items="@Model.FrequencyType"
+                     id="FrequencyTypeId"
+                     label="Frequency Type"
+                     key-property="FrequencyTypeId"
+                     value-property="FrequencyName"
+                     selected-value="@Model.SearchModel.FrequencyTypeId">
+    </Custom:Dropdown>
+</Custom:SearchForm>
+
+<div class="table-responsive">
+    <Custom:Table id="GarbageCollectionScheduleID"
+                  items="Model.Data"
+                  count="Model.DataCount"
+                  page="Model.PageMode"
+                  selection-mode="Multiple"
+                  property="GarbageCollectionScheduleId"
+                  route="/GarbageCollectionSchedule/ListScreen"
+                  url="/GarbageCollectionSchedule/GarbageCollectionScheduleEdit?GarbageCollectionScheduleId="
+                  column=1>
+        <Table:Column property="DayOfWeek.Day" caption="Day Of Week"></Table:Column>
+        <Table:Column property="FrequencyType.FrequencyName" caption="Frequency"></Table:Column>
+    </Custom:Table>
+</div>

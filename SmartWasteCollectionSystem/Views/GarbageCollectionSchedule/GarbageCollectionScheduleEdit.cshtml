@@ -1,0 +1,94 @@
+﻿@using SmartWasteCollectionSystem.Models
+@using System.Security.Claims
+@model EditScreenModel<GarbageCollectionSchedule>
+@{
+    ViewData["Title"] = "Garbage Collection Schedule Edit Screen";
+}
+@if (Model.ErrorMessages != null)
+{
+    <br />
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+            @foreach (var error in Model.ErrorMessages)
+            {
+                <div>@error</div>
+            }
+        </div>
+    </div>
+}
+
+<div class="card mb-3">
+    <div class="card-header">Garbage Collection Schedule</div>
+    <div class="card-body">
+        <Custom:Form id="GarbageCollectionSchedule"
+                     submit-tag="Save"
+                     controller="GarbageCollectionSchedule"
+                     action="Save"
+                     cancel-redirect="/GarbageCollectionSchedule/ListScreen">
+
+            <Custom:TextBox id="GarbageCollectionScheduleId"
+                            label="GarbageCollectionScheduleId"
+                            type="text"
+                            value="@Model.Data.GarbageCollectionScheduleId"
+                            is-hidden="true"
+                            placeholder="">
+            </Custom:TextBox>
+
+           <Custom:Dropdown items="@Model.DayOfWeek"
+                             id="DayOfWeekId"
+                             label="Day Of Week"
+                             key-property="DayOfWeekId"
+                             value-property="Day"
+                             selected-value="@Model.Data.DayOfWeekId"
+                             is-required="true">
+            </Custom:Dropdown>
+
+            <Custom:Dropdown items="@Model.FrequencyType"
+                             id="FrequencyTypeId"
+                             label="Frequency"
+                             key-property="FrequencyTypeId"
+                             value-property="FrequencyName"
+                             selected-value="@Model.Data.FrequencyTypeId"
+                             is-required="true">
+            </Custom:Dropdown>
+
+            <Custom:TextBox id="CollectionTime"
+                            label="Collection Time"
+                            type="time"
+                            value="@Model.Data.CollectionTime.ToString("HH:mm")"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="EffectiveFrom"
+                            label="Effective From"
+                            type="date"
+                            value="@((Model.Data.EffectiveFrom ?? DateOnly.FromDateTime(DateTime.Now)).ToString("yyyy-MM-dd"))"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="EffectiveTo"
+                            label="Effective To"
+                            type="date"
+                            value="@((Model.Data.EffectiveTo ?? DateOnly.FromDateTime(DateTime.Now)).ToString("yyyy-MM-dd"))"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:CheckBox id="IsActive"
+                             label="Is Active"
+                             is-checked="@Model.Data.IsActive"
+                             value="@Model.Data.IsActive">
+            </Custom:CheckBox>
+
+            <Custom:TextArea id="Notes"
+                             label="Notes"
+                             type="text"
+                             value="@Model.Data.Notes">
+            </Custom:TextArea>
+
+        </Custom:Form>
+    </div>
+</div>
