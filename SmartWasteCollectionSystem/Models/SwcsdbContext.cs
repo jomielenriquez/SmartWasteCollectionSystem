@@ -35,7 +35,7 @@ public partial class SwcsdbContext : DbContext
     {
         modelBuilder.Entity<Announcement>(entity =>
         {
-            entity.HasKey(e => e.AnnouncementId);//.HasName("PK__Announce__9DE44574B1F6A4C6");
+            entity.HasKey(e => e.AnnouncementId);//.HasName("PK__Announce__9DE44574D64ADA81");
 
             entity.Property(e => e.AnnouncementId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedDate)
@@ -59,7 +59,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<Email>(entity =>
         {
-            entity.HasKey(e => e.EmailId);//.HasName("PK__Emails__7ED91ACFBFB55AA5");
+            entity.HasKey(e => e.EmailId);//.HasName("PK__Emails__7ED91ACF5C6D758F");
 
             entity.Property(e => e.EmailId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedDate)

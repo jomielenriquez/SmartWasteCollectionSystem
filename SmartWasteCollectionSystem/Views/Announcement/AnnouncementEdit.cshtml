@@ -1,0 +1,90 @@
+﻿@using SmartWasteCollectionSystem.Models
+@using System.Security.Claims
+@model EditScreenModel<Announcement>
+@{
+    ViewData["Title"] = "Announcement Screen";
+}
+@if (Model.ErrorMessages != null)
+{
+    <br />
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+            @foreach (var error in Model.ErrorMessages)
+            {
+                <div>@error</div>
+            }
+        </div>
+    </div>
+}
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<div class="card mb-3">
+    <div class="card-header">Announcement</div>
+    <div class="card-body">
+        <Custom:Form id="Announcement"
+                     submit-tag="Save"
+                     controller="Announcement"
+                     action="Save"
+                     cancel-redirect="/Announcement/ListScreen">
+
+            <Custom:TextBox id="AnnouncementId"
+                            label="AnnouncementId"
+                            type="text"
+                            value="@Model.Data.AnnouncementId"
+                            is-hidden="true"
+                            placeholder="">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="Title"
+                            label="Title"
+                            type="text"
+                            value="@Model.Data.Title"
+                            placeholder="Enter title">
+            </Custom:TextBox>
+
+            <Custom:TextArea id="Message"
+                             label="Message"
+                             type="text"
+                             value="@Model.Data.Message"
+                             is-required="true">
+            </Custom:TextArea>
+
+            <Custom:TextBox id="StarDate"
+                            label="Start Date"
+                            type="date"
+                            value="@Model.Data.StartDate.ToString("yyyy-MM-dd")"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="EndDate"
+                            label="End Date"
+                            type="date"
+                            value="@Model.Data.EndDate.ToString("yyyy-MM-dd")"
+                            placeholder=""
+                            is-required="true">
+            </Custom:TextBox>
+
+            <Custom:CheckBox id="IsActive"
+                             label="Is Active"
+                             is-checked="@Model.Data.IsActive"
+                             value="@Model.Data.IsActive">
+            </Custom:CheckBox>
+
+        </Custom:Form>
+    </div>
+</div>
+<script>
+    let editorInstance;
+
+    ClassicEditor
+        .create(document.querySelector('#Message'))
+        .then(editor => {
+            editorInstance = editor;
+        });
+
+    function getEditorValue() {
+        console.log(editorInstance.getData());
+    }
+</script>

@@ -21,7 +21,9 @@ namespace SmartWasteCollectionSystem.Repository
             result.Data = _announcementRepository.GetByCondition(
                 x => x.AnnouncementId == announcementId).FirstOrDefault() ?? new Announcement()
                 {
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    StartDate = DateOnly.FromDateTime(DateTime.Now),
+                    EndDate = DateOnly.FromDateTime(DateTime.Now)
                 };
             return result;
         }

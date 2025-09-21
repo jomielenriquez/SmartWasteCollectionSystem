@@ -1,0 +1,43 @@
+﻿@using SmartWasteCollectionSystem.Models
+@model ListScreenModel<AnnouncementSearchModel>
+@{
+    ViewData["Title"] = "Announcements Screen";
+}
+
+<Custom:ActionItems caption="Announcements"
+                    template="Default"
+                    id="Announcement"
+                    table="AnnouncementID"
+                    controller="Announcement"
+                    delete-action="Delete"
+                    edit-action="AnnouncementEdit">
+</Custom:ActionItems>
+
+<Custom:SearchForm id="AnnouncmentSearchForm"
+                   controller="Announcement"
+                   action="AnnouncementSearch">
+    <Custom:TextBox id="Title"
+                    label="Title"
+                    type="text"
+                    value="@Model.SearchModel.Title"
+                    placeholder="Enter announcement title">
+    </Custom:TextBox>
+</Custom:SearchForm>
+
+<div class="table-responsive">
+    <Custom:Table id="AnnouncementID"
+                  items="Model.Data"
+                  count="Model.DataCount"
+                  page="Model.PageMode"
+                  selection-mode="Multiple"
+                  property="AnnouncementId"
+                  route="/Announcement/ListScreen"
+                  url="/Announcement/AnnouncementEdit?AnnouncementId="
+                  column=1>
+        <Table:Column property="Title" caption="Announcement Title"></Table:Column>
+        <Table:Column property="StartDate" caption="Start Date"></Table:Column>
+        <Table:Column property="EndDate" caption="End Date"></Table:Column>
+        <Table:Column property="IsActive" caption="Active"></Table:Column>
+        <Table:Column property="CreatedDate" caption="Created Date"></Table:Column>
+    </Custom:Table>
+</div>

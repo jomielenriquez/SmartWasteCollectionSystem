@@ -5,7 +5,7 @@ BEGIN
 		Title NVARCHAR(200) NOT NULL,                             -- Short title
 		Message NVARCHAR(MAX) NOT NULL,                           -- Full announcement content
 		StartDate DATE NOT NULL,                                  -- When it becomes visible
-		EndDate DATE NULL,                                        -- Optional: when it expires
+		EndDate DATE NOT NULL,                                        -- Optional: when it expires
 		IsActive BIT NOT NULL DEFAULT 1,                          -- Active/Inactive flag
 		CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
 	);
