@@ -1,0 +1,99 @@
+﻿@using SmartWasteCollectionSystem.Models
+@using System.Security.Claims
+@model EditScreenModel<Email>
+@{
+    ViewData["Title"] = "Email Screen";
+}
+@if (Model.ErrorMessages != null)
+{
+    <br />
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+            @foreach (var error in Model.ErrorMessages)
+            {
+                <div>@error</div>
+            }
+        </div>
+    </div>
+}
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<div class="card mb-3">
+    <div class="card-header">Email</div>
+    <div class="card-body">
+        <Custom:Form id="Email"
+                     submit-tag="Save"
+                     controller="Email"
+                     action="Save"
+                     cancel-redirect="/Email/EmailListScreen"
+                     display-submit="@(!(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null))">
+
+            <Custom:TextBox id="EmailId"
+                            label="EmailId"
+                            type="text"
+                            value="@Model.Data.EmailId"
+                            is-hidden="true"
+                            placeholder=""
+                            is-disabled="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null)">
+            </Custom:TextBox>
+            
+            <Custom:TextBox id="Recipients"
+                            label="Recepients"
+                            type="text"
+                            value="@Model.Data.Recipients"
+                            placeholder="Enter recepients"
+                            is-disabled="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null)">
+            </Custom:TextBox>
+
+            <Custom:TextBox id="Title"
+                            label="Title"
+                            type="text"
+                            value="@Model.Data.Title"
+                            placeholder="Enter title"
+                            is-disabled="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null)">
+            </Custom:TextBox>
+
+            <Custom:TextArea id="Message"
+                             label="Message"
+                             type="text"
+                             value="@Model.Data.Message"
+                             is-required="true"
+                             read-only="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null)">
+            </Custom:TextArea>
+
+            <Custom:CheckBox id="IsSent"
+                             label="Send"
+                             is-checked="@Model.Data.IsSent"
+                             value="@Model.Data.IsSent"
+                             is-disabled="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty)">
+            </Custom:CheckBox>
+
+            @if (Model.Data.IsSent && Model.Data.EmailId != Guid.Empty)
+            {
+                <Custom:TextBox id="SentDate"
+                                label="Date and Time Sent"
+                                type="text"
+                                value="@((Model.Data.SentDate ?? DateTime.Now))"
+                                placeholder=""
+                                is-required="true"
+                                is-disabled="true">
+                </Custom:TextBox>
+            }
+
+        </Custom:Form>
+    </div>
+</div>
+<script>
+    let editorInstance;
+
+    ClassicEditor
+        .create(document.querySelector('#Message'))
+        .then(editor => {
+            editorInstance = editor;
+        });
+
+    function getEditorValue() {
+        console.log(editorInstance.getData());
+    }
+</script>

@@ -15,6 +15,8 @@ namespace SmartWasteCollectionSystem.TagHelpers
         public string Value { get; set; }
         public bool? IsHidden { get; set; }
         public bool IsChecked { get; set; } = false; // Added property for checked state
+
+        public bool IsDisabled { get; set; } = false;
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -31,13 +33,14 @@ namespace SmartWasteCollectionSystem.TagHelpers
                 + Label + "</label>");
 
             var isChecked = IsChecked ? "checked" : "";
+            var isDisabled = IsDisabled ? "disabled" : "";
             output.Content.AppendHtml($@"<div class=""col-sm-8"">
                 <input type='checkbox' 
                        class='form-check-input {Id} SysCoreTextBoxClass' 
                        id='{Id}' 
                        name='{Id}' 
                        value='true' 
-                       {isChecked} /></div>
+                       {isChecked} {isDisabled} /></div>
             ");
 
         }

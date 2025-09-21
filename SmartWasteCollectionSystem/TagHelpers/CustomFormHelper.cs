@@ -18,6 +18,7 @@ namespace SmartWasteCollectionSystem.TagHelpers
         public string? SubmitIcon { get; set; } = "fa-floppy-disk";
         public string? CancelRedirect { get; set; }
         public string? Enctype { get; set; }
+        public bool DisplaySubmit { get; set; } = true;
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -32,7 +33,7 @@ namespace SmartWasteCollectionSystem.TagHelpers
 
             output.Content.AppendHtml(output.GetChildContentAsync().Result);
 
-            if (!string.IsNullOrEmpty(SubmitTag))
+            if (!string.IsNullOrEmpty(SubmitTag) && DisplaySubmit)
             {
                 output.Content.AppendHtml("<div class=\"SysCoreTextBoxDivClass\"><button type=\"submit\" class=\"btn btn-primary mt-2 mb-2 me-2\"><i class=\"fa-solid " + SubmitIcon + "\"></i> " + (SubmitTag ?? "Submit") + "</button>");
             }
