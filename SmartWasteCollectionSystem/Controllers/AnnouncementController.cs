@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using SmartWasteCollectionSystem.Interface;
 using SmartWasteCollectionSystem.Models;
 using SmartWasteCollectionSystem.Repository;
+using SmartWasteCollectionSystem.Service;
 
 namespace SmartWasteCollectionSystem.Controllers
 {
@@ -12,11 +13,20 @@ namespace SmartWasteCollectionSystem.Controllers
     {
         private readonly IBaseRepository<Announcement> _announcement;
         private readonly AnnouncementRepository _announcementRepository;
-        
-        public AnnouncementController(IBaseRepository<Announcement> announcement)
+        private readonly EmailRepository _emailRepository;
+        private readonly IBaseRepository<User> _userRepository;
+
+        public AnnouncementController(
+            IBaseRepository<Announcement> announcement,
+            IBaseRepository<Email> email,
+            EmailService emailService,
+            IBaseRepository<User> userRepository
+        )
         {
             _announcement = announcement;
             _announcementRepository = new AnnouncementRepository(announcement);
+            _emailRepository = new EmailRepository(email, emailService);
+            _userRepository = userRepository;
         }
         [Authorize(Roles = "Admin")]
         public IActionResult ListScreen(PageModel pageModel)
@@ -62,6 +72,20 @@ namespace SmartWasteCollectionSystem.Controllers
                     ErrorMessages = result.Errors ?? new List<string> { }
                 };
                 return View("AnnouncementEdit", editScreen);
+            }
+
+            if (announcement.IsActive)
+            {
+                var email = new Email()
+                {
+                    Recipients = string.Join(";", _userRepository.GetAll().Select(x => x.Email).ToArray()),
+                    Title = announcement.Title,
+                    Message = announcement.Message,
+                    IsSent = true,
+                    SentDate = DateTime.Now
+                };
+
+                _emailRepository.SaveEmail(email);
             }
 
             return RedirectToAction("ListScreen", "Announcement");
