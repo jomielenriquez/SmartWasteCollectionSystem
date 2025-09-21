@@ -60,7 +60,10 @@ namespace SmartWasteCollectionSystem.Repository
             if (email.IsSent)
             {
                 email.SentDate = DateTime.Now;
-                _emailService.SendEmail(email.Recipients, email.Title, email.Message);
+                foreach(var recipient in email.Recipients.Trim().Split(";"))
+                {
+                    _emailService.SendEmail(recipient, email.Title, email.Message);
+                }
             }
             if (email.EmailId == Guid.Empty)
             {

@@ -12,10 +12,12 @@ namespace SmartWasteCollectionSystem.Controllers
     {
         private readonly IBaseRepository<Email> _email;
         private readonly EmailRepository _emailRepository;
-        public EmailController(IBaseRepository<Email> email, EmailService emailService)
+        private readonly IBaseRepository<User> _userRepository;
+        public EmailController(IBaseRepository<Email> email, EmailService emailService, IBaseRepository<User> userRepository)
         {
             _email = email;
             _emailRepository = new EmailRepository(email, emailService);
+            _userRepository = userRepository;
         }
         [Authorize(Roles = "Admin")]
         public IActionResult EmailListScreen(PageModel pageModel)
@@ -45,7 +47,8 @@ namespace SmartWasteCollectionSystem.Controllers
             var result = _emailRepository.GetEmailById(email.EmailId);
             var editScreen = new EditScreenModel<Email>()
             {
-                Data = result.Data
+                Data = result.Data,
+                ListOfUsers = _userRepository.GetAll().ToList(),
             };
             return View(editScreen);
         }
@@ -58,6 +61,7 @@ namespace SmartWasteCollectionSystem.Controllers
                 var editScreen = new EditScreenModel<Email>()
                 {
                     Data = result.Data,
+                    ListOfUsers = _userRepository.GetAll().ToList(),
                     ErrorMessages = result.Errors ?? new List<string> { }
                 };
                 return View("EmailEdit", editScreen);

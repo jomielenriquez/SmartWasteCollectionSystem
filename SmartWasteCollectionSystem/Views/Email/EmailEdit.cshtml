@@ -38,13 +38,48 @@
                             is-disabled="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null)">
             </Custom:TextBox>
             
-            <Custom:TextBox id="Recipients"
-                            label="Recepients"
-                            type="text"
-                            value="@Model.Data.Recipients"
-                            placeholder="Enter recepients"
-                            is-disabled="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null)">
-            </Custom:TextBox>
+            <div class="SysCoreTextBoxDivClass mb-3 row">
+                <label for="Recipients" class="form-label mt-0 RecipientsSysCoreTextBoxLabelClass col-sm-4 col-form-label">Recipients</label>
+                <div class="col-sm-8">
+                    <div class="mb-3">
+                        <input type="text"
+                               class="form-control"
+                               id="Recipients"
+                               name="Recipients"
+                               asp-for="Data.Recipients"
+                               placeholder="Selected emails will appear here"
+                               disabled="@(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null)" />
+                    </div>
+
+                    @if(!(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null))
+                    {
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Recipients
+                            </button>
+                            <ul class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton" style="min-width: 300px;">
+                                <li>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                        <label class="form-check-label fw-bold" for="selectAll">Select All</label>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+
+                                @foreach(var user in Model.ListOfUsers)
+                                {
+                                    <li>
+                                        <div class="form-check">
+                                            <input class="form-check-input recipient" type="checkbox" value="@user.Email" id="@user.Email">
+                                            <label class="form-check-label" for="@user.Email">@(user.FirstName + " " + user.LastName + " (" + user.Email + ")")</label>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </div>
 
             <Custom:TextBox id="Title"
                             label="Title"
@@ -97,3 +132,37 @@
         console.log(editorInstance.getData());
     }
 </script>
+
+@if (!(Model.Data.IsSent && Model.Data.EmailId != Guid.Empty && Model.ErrorMessages == null))
+{
+    
+    <script>
+        const recipientsInput = document.getElementById('Recipients');
+        const selectAll = document.getElementById('selectAll');
+        const recipientCheckboxes = document.querySelectorAll('.recipient');
+
+        // Update textbox with selected emails
+        function updateRecipientsTextbox() {
+          let selected = [...recipientCheckboxes].filter(c => c.checked).map(c => c.value);
+          recipientsInput.value = selected.join('; '); // use ; separator for emails
+        }
+
+        // Select All toggle
+        selectAll.addEventListener('change', function () {
+          recipientCheckboxes.forEach(c => c.checked = this.checked);
+          updateRecipientsTextbox();
+        });
+
+        // Handle individual selections
+        recipientCheckboxes.forEach(c => {
+          c.addEventListener('change', function () {
+            // Sync select all checkbox
+            let total = recipientCheckboxes.length;
+            let checked = document.querySelectorAll('.recipient:checked').length;
+            selectAll.checked = (total === checked);
+
+            updateRecipientsTextbox();
+          });
+        });
+    </script>
+}
