@@ -148,6 +148,7 @@ public partial class SwcsdbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FirstName).HasMaxLength(50);
+            entity.Property(e => e.HomeOwnerApikey).HasColumnName("HomeOwnerAPIKey");
             entity.Property(e => e.LastName).HasMaxLength(50);
             entity.Property(e => e.Latitude).HasColumnType("decimal(9, 6)");
             entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
