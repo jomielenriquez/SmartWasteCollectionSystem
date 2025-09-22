@@ -17,6 +17,8 @@ public partial class SwcsdbContext : DbContext
 
     public virtual DbSet<Announcement> Announcements { get; set; }
 
+    public virtual DbSet<BinLog> BinLogs { get; set; }
+
     public virtual DbSet<DayOfWeek> DayOfWeeks { get; set; }
 
     public virtual DbSet<Email> Emails { get; set; }
@@ -43,6 +45,26 @@ public partial class SwcsdbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Title).HasMaxLength(200);
+        });
+
+        modelBuilder.Entity<BinLog>(entity =>
+        {
+            entity.HasKey(e => e.BinLogId);//.HasName("PK__BinLog__C9FCFC36C50C7C44");
+
+            entity.ToTable("BinLog");
+
+            entity.Property(e => e.BinLogId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("BinLogID");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.BinLogs)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BinLog_UserID");
         });
 
         modelBuilder.Entity<DayOfWeek>(entity =>

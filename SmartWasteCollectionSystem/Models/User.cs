@@ -35,6 +35,8 @@ public partial class User
 
     public Guid? HomeOwnerApikey { get; set; }
 
+    public virtual ICollection<BinLog> BinLogs { get; set; } = new List<BinLog>();
+
     public virtual ICollection<MonthlyDue> MonthlyDues { get; set; } = new List<MonthlyDue>();
 
     public virtual UserRole UserRole { get; set; } = null!;
