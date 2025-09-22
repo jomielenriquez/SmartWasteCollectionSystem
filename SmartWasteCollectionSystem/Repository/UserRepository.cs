@@ -11,9 +11,11 @@ namespace SmartWasteCollectionSystem.Repository
     public class UserRepository
     {
         private readonly IBaseRepository<User> _userRepository;
-        public UserRepository(IBaseRepository<User> userRepository)
+        private readonly IBaseRepository<UserRole> _userRoleRepository;
+        public UserRepository(IBaseRepository<User> userRepository, IBaseRepository<UserRole> userRoleRepository)
         {
             _userRepository = userRepository;
+            _userRoleRepository = userRoleRepository;
         }
 
         public static string ComputeMd5Hash(string input)
@@ -63,6 +65,10 @@ namespace SmartWasteCollectionSystem.Repository
 
             if (user.UserId == Guid.Empty)
             {
+                if(user.UserRoleId == _userRoleRepository.GetByCondition(x => x.RoleName == "Home Owner").FirstOrDefault()?.UserRoleId)
+                {
+                    user.HomeOwnerApikey = Guid.NewGuid();
+                }
                 user.Password = ComputeMd5Hash(user.Password);
                 result.Data = _userRepository.Save(user);
             }

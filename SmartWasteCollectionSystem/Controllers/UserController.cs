@@ -15,8 +15,8 @@ namespace SmartWasteCollectionSystem.Controllers
         public UserController(IBaseRepository<User> userRepository, IBaseRepository<UserRole> roleService)
         {
             _userRepository = userRepository;
-            _user = new UserRepository(_userRepository);
             _roleService = roleService;
+            _user = new UserRepository(_userRepository, _roleService);
         }
 
         [Authorize(Roles = "Admin")]

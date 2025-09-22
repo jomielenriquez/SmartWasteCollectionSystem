@@ -85,6 +85,7 @@ namespace SmartWasteCollectionSystem.Controllers
             }
             user.Password = ComputeMd5Hash(user.Password);
             user.CreatedDate = DateTime.Now;
+            user.HomeOwnerApikey = Guid.NewGuid();
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Login");
