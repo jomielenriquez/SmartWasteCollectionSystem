@@ -1,5 +1,5 @@
 ﻿@using System.Security.Claims
-@model List<SmartWasteCollectionSystem.Models.User>
+@model DashboardModel
 @{
     ViewData["Title"] = "Dashboard";
     var userRole = User.FindFirstValue(ClaimTypes.Role);
@@ -15,8 +15,8 @@
                         Garbage Collection Schedule
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <h5 class="card-title">Create new Garbage Collection Schedule</h5>
+                        <p class="card-text">Click the button below to create.</p>
                         <a href="/GarbageCollectionSchedule/GarbageCollectionScheduleEdit" class="btn btn-primary">Add New Garbage Collection Schedule</a>
                     </div>
                 </div>
@@ -27,24 +27,26 @@
             <div class="col">
                 <div class="card" style="width: auto;">
                     <div class="card-header">
-                        Featured
+                        New Users
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
+                        @foreach(var user in Model.Users)
+                        {
+                            <li class="list-group-item">@(user.FirstName + " " + user.LastName + " (" + user.Email + ")")</li>
+                        }
                     </ul>
                 </div>
             </div>
             <div class="col">
                 <div class="card" style="width: auto;">
                     <div class="card-header">
-                        Featured
+                        Garbage Collection Schedules
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
+                        @foreach(var sched in Model.GarbageCollectionSchedules)
+                        {
+                            <li class="list-group-item">@(sched.DayOfWeek.Day + " " + sched.FrequencyType.FrequencyName + " " + sched.CollectionTime.ToString("hh:mm tt"))</li>
+                        }
                     </ul>
                 </div>
             </div>
