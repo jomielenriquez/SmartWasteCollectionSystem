@@ -7,51 +7,71 @@
 
 @if (userRole == "Admin")
 {
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        Garbage Collection Schedule
+    <div class="container my-4">
+        <div class="row g-4">
+            <!-- Garbage Collection Schedule -->
+            <div class="col-12">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-success text-white fw-bold">
+                        <i class="fas fa-dumpster me-2"></i> Garbage Collection Schedule
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Create new Garbage Collection Schedule</h5>
-                        <p class="card-text">Click the button below to create.</p>
-                        <a href="/GarbageCollectionSchedule/GarbageCollectionScheduleEdit" class="btn btn-primary">Add New Garbage Collection Schedule</a>
+                        <h5 class="card-title">Create New Garbage Collection Schedule</h5>
+                        <p class="card-text text-muted">
+                            Keep your schedule updated for efficient collection.
+                        </p>
+                        <a href="/GarbageCollectionSchedule/GarbageCollectionScheduleEdit"
+                           class="btn btn-success">
+                            <i class="fas fa-plus-circle me-2"></i> Add New Schedule
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col">
-                <div class="card" style="width: auto;">
-                    <div class="card-header">
-                        New Users
+
+            <!-- New Users -->
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-light fw-bold">
+                        <i class="fas fa-users me-2"></i> New Users
                     </div>
                     <ul class="list-group list-group-flush">
-                        @foreach(var user in Model.Users)
+                        @foreach (var user in Model.Users)
                         {
-                            <li class="list-group-item">@(user.FirstName + " " + user.LastName + " (" + user.Email + ")")</li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="fas fa-user text-success me-2"></i>
+                                    @user.FirstName @user.LastName
+                                    <small class="text-muted">(@user.Email)</small>
+                                </span>
+                            </li>
                         }
                     </ul>
                 </div>
             </div>
-            <div class="col">
-                <div class="card" style="width: auto;">
-                    <div class="card-header">
-                        Garbage Collection Schedules
+
+            <!-- Garbage Collection Schedules -->
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-light fw-bold">
+                        <i class="fas fa-calendar-alt me-2"></i> Garbage Collection Schedules
                     </div>
                     <ul class="list-group list-group-flush">
-                        @foreach(var sched in Model.GarbageCollectionSchedules)
+                        @foreach (var sched in Model.GarbageCollectionSchedules)
                         {
-                            <li class="list-group-item">@(sched.DayOfWeek.Day + " " + sched.FrequencyType.FrequencyName + " " + sched.CollectionTime.ToString("hh:mm tt"))</li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="fas fa-clock text-success me-2"></i>
+                                    @sched.DayOfWeek.Day @sched.FrequencyType.FrequencyName
+                                    <span class="badge bg-secondary">@sched.CollectionTime.ToString("hh:mm tt")</span>
+                                </span>
+                            </li>
                         }
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+
 }
 else if (userRole == "Home Owner")
 {
