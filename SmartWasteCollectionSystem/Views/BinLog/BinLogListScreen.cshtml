@@ -1,0 +1,40 @@
+﻿@using SmartWasteCollectionSystem.Models
+@model ListScreenModel<BinLogSearchModel>
+@{
+    ViewData["Title"] = "Bin Logs Screen";
+}
+
+<div style="margin-bottom: 10px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Bin Logs</li>
+        </ol>
+    </nav>
+</div>
+
+<Custom:SearchForm id="BinLogSearchForm"
+                   controller="BinLog"
+                   action="BinLogSearch">
+    <Custom:Dropdown items="@Model.User"
+                     id="UserId"
+                     label="User"
+                     key-property="UserId"
+                     value-property="FullName"
+                     selected-value="@Model.SearchModel.UserId">
+    </Custom:Dropdown>
+</Custom:SearchForm>
+
+<div class="table-responsive">
+    <Custom:Table id="BinLogID"
+                  items="Model.Data"
+                  count="Model.DataCount"
+                  page="Model.PageMode"
+                  selection-mode="Multiple"
+                  property="BinLogId"
+                  route="/BinLog/BinLogListScreen"
+                  url="/BinLog/BinLogEdit?BinLogId="
+                  column=1>
+        <Table:Column property="BinStatusPercentage" caption="Status In Percentage"></Table:Column>
+        <Table:Column property="CreatedDate" caption="Created Date"></Table:Column>
+    </Custom:Table>
+</div>

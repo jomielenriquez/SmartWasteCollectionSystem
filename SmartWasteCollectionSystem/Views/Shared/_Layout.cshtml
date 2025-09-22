@@ -61,6 +61,12 @@
                                     <a class="nav-link text-light" asp-area="" asp-controller="Email" asp-action="EmailListScreen"><i class="fa-solid fa-envelope-circle-check"></i> Outgoing Emails</a>
                                 </li>
                             }
+                            @if (roles == "Home Owner")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="BinLog" asp-action="BinLogListScreen"><i class="fa-regular fa-trash-can"></i> Bin Logs</a>
+                                </li>
+                            }
                         </ul>
                         <ul class="nav">
                             <li class="nav-item"><a href="/User/UserEdit?UserId=@User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value" class="nav-link link-body-emphasis px-2 text-light">@(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value)</a></li>

@@ -32,7 +32,7 @@ namespace SmartWasteCollectionSystem.Controllers
             var pageModel = new PageModel();
             pageModel.Search = JsonConvert.SerializeObject(emailSearchModel);
 
-            return RedirectToAction("ListScreen", "Email", pageModel);
+            return RedirectToAction("EmailListScreen", "Email", pageModel);
         }
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
