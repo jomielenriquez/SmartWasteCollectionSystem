@@ -9,10 +9,39 @@ namespace SmartWasteCollectionSystem.Repository
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected readonly SwcsdbContext _context;
-
+        private readonly TimeZoneInfo _timeZoneInfo;
         public BaseRepository(SwcsdbContext context)
         {
             _context = context;
+            _timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+        }
+        private void ConvertDateTimesToTimeZone(T data)
+        {
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var prop in properties)
+            {
+                if (prop.CanWrite)
+                {
+                    if (prop.PropertyType == typeof(DateTime))
+                    {
+                        var value = (DateTime)prop.GetValue(data);
+                        // Only convert if not default value
+                        if (value != default)
+                        {
+                            // Assume value is UTC, convert to configured time zone
+                            prop.SetValue(data, TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(value, DateTimeKind.Utc), _timeZoneInfo));
+                        }
+                    }
+                    else if (prop.PropertyType == typeof(DateTime?))
+                    {
+                        var value = (DateTime?)prop.GetValue(data);
+                        if (value.HasValue && value.Value != default)
+                        {
+                            prop.SetValue(data, TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(value.Value, DateTimeKind.Utc), _timeZoneInfo));
+                        }
+                    }
+                }
+            }
         }
         public IEnumerable<T> GetAll()
         {
@@ -88,6 +117,7 @@ namespace SmartWasteCollectionSystem.Repository
         {
             try
             {
+                ConvertDateTimesToTimeZone(data);
                 _context.Set<T>().Add(data);
                 _context.SaveChanges();
                 return data;
@@ -112,6 +142,7 @@ namespace SmartWasteCollectionSystem.Repository
         {
             try
             {
+                ConvertDateTimesToTimeZone(data);
                 _context.Set<T>().Update(data);
                 _context.SaveChanges();
                 return data;

@@ -16,12 +16,11 @@ namespace SmartWasteCollectionSystem.Controllers
         public BinLogController(
             IBaseRepository<BinLog> bin, 
             IBaseRepository<User> user, 
-            IBaseRepository<UserRole> role,
-            IConfiguration configuration)
+            IBaseRepository<UserRole> role)
         {
             _bin = bin;
             _user = user;
-            _binRepository = new BinLogRepository(bin, configuration);
+            _binRepository = new BinLogRepository(bin);
             _role = role;
         }
         [Authorize(Roles = "Home Owner")]
