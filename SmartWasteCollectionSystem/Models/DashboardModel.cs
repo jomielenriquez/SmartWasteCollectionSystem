@@ -6,7 +6,7 @@
         public List<GarbageCollectionSchedule> GarbageCollectionSchedules { get; set; }
         public int BinStatusPercentage { get; set; }
         public MonthlyDue MonthlyDue { get; set; }
-        public DateTime CollectionSchedule { get; set; }
+        public GarbageCollectionSchedule CollectionSchedule { get; set; }
         public int NumberOfAnnouncement { get; set; }
     }
 }

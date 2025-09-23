@@ -15,6 +15,8 @@ namespace SmartWasteCollectionSystem.Controllers
         private readonly IBaseRepository<User> _user;
         private readonly IBaseRepository<BinLog> _bin;
         private readonly IBaseRepository<MonthlyDue> _due;
+        private readonly IBaseRepository<GarbageCollectionSchedule> _garbage;
+        private readonly IBaseRepository<Announcement> _annnouncement;
 
         public HomeController(
             ILogger<HomeController> logger, 
@@ -22,7 +24,9 @@ namespace SmartWasteCollectionSystem.Controllers
             IBaseRepository<GarbageCollectionSchedule> schedule,
             IBaseRepository<User> user,
             IBaseRepository<BinLog> bin,
-            IBaseRepository<MonthlyDue> due
+            IBaseRepository<MonthlyDue> due,
+            IBaseRepository<GarbageCollectionSchedule> garbage,
+            IBaseRepository<Announcement> annnouncement
         )
         {
             _logger = logger;
@@ -31,11 +35,16 @@ namespace SmartWasteCollectionSystem.Controllers
             _user = user;
             _bin = bin;
             _due = due;
+            _garbage = garbage;
+            _annnouncement = annnouncement;
         }
 
         [Authorize]
         public IActionResult Index()
         {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila"); // Change to your time zone
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
+
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             var dashboardData = new DashboardModel();
 
@@ -48,8 +57,8 @@ namespace SmartWasteCollectionSystem.Controllers
                 ).ToList();
 
                 dashboardData.Users = _user.GetByCondition(u =>
-                    u.CreatedDate.Year == DateTime.Now.Year &&
-                    u.CreatedDate.Month == DateTime.Now.Month
+                    u.CreatedDate.Year == localTime.Year &&
+                    u.CreatedDate.Month == localTime.Month
                 ).ToList();
             }
             else if (userRole == "Home Owner")
@@ -60,10 +69,24 @@ namespace SmartWasteCollectionSystem.Controllers
 
                 dashboardData.MonthlyDue = _due.GetByCondition(d =>
                     d.UserId == Guid.Parse(User.FindFirstValue("Id")) &&
-                    d.DueDate.Month == DateTime.Now.Month &&
-                    d.DueDate.Year == DateTime.Now.Year &&
+                    d.DueDate.Month == localTime.Month &&
+                    d.DueDate.Year == localTime.Year &&
                     !d.IsPaid
-                ).FirstOrDefault();
+                ).FirstOrDefault() ?? new MonthlyDue();
+
+                dashboardData.CollectionSchedule = _garbage.GetByConditionAndIncludes(g =>
+                    g.IsActive == true
+                    && g.EffectiveFrom <= DateOnly.FromDateTime(localTime)
+                    && g.EffectiveTo >= DateOnly.FromDateTime(localTime),
+                    "DayOfWeek",
+                    "FrequencyType"
+                ).OrderBy(g => g.DayOfWeek.DayOfWeekId).FirstOrDefault();
+                
+                dashboardData.NumberOfAnnouncement = _annnouncement.GetByCondition(a => 
+                    a.IsActive == true
+                    && a.StartDate <= DateOnly.FromDateTime(localTime)
+                    && a.EndDate >= DateOnly.FromDateTime(localTime)
+                ).Count();
             }
             return View(dashboardData);
         }
