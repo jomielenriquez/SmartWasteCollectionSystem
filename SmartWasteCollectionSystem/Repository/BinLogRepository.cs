@@ -9,9 +9,11 @@ namespace SmartWasteCollectionSystem.Repository
     public class BinLogRepository
     {
         private readonly IBaseRepository<BinLog> _bin;
-        public BinLogRepository(IBaseRepository<BinLog> bin)
+        private readonly TimeZoneInfo _timeZoneInfo;
+        public BinLogRepository(IBaseRepository<BinLog> bin, IConfiguration configuration)
         {
             _bin = bin;
+            _timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(configuration["TimeZone"] ?? "UTC");
         }
         public Results<BinLog> GetBinLogById(Guid binLogId)
         {
@@ -20,7 +22,7 @@ namespace SmartWasteCollectionSystem.Repository
             result.Data = _bin.GetByCondition(
                 x => x.BinLogId == binLogId).FirstOrDefault() ?? new BinLog()
                 {
-                    CreatedDate = DateTime.Now
+                    CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZoneInfo)
                 };
             return result;
         }
@@ -52,12 +54,12 @@ namespace SmartWasteCollectionSystem.Repository
             }
             if (binLog.BinLogId == Guid.Empty)
             {
+                binLog.CreatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZoneInfo);
                 result.Data = _bin.Save(binLog);
             }
             else
             {
                 var mdResult = _bin.GetById(binLog.BinLogId);
-                binLog.CreatedDate = mdResult.CreatedDate;
                 result.Data = _bin.Update(binLog);
             }
             return result;

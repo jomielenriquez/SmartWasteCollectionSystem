@@ -5,6 +5,14 @@
     var userRole = User.FindFirstValue(ClaimTypes.Role);
 }
 
+@{
+    var tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila"); // Change to your time zone
+    var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
+}
+<h4>Server UTC Time: @DateTime.UtcNow</h4>
+<h4>Server Local Time: @DateTime.Now</h4>
+<h4>Asia/Manila Time: @localTime</h4>
+
 @if (userRole == "Admin")
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
