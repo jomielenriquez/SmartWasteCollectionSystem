@@ -136,7 +136,7 @@ else if (userRole == "Home Owner")
                         <div class="card-body d-flex flex-column justify-content-center align-items-center bg-success text-white rounded-3">
                             <i class="fa-solid fa-money-bills fa-3x mb-2"></i>
                             <div class="fw-bold">Monthly Dues</div>
-                            <div class="mt-2 text-light small">Monthly Dues</div>
+                            <div class="mt-2 text-light small">@((Model.MonthlyDue != null ? Model.MonthlyDue.Amount : 0).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-PH"))) this month</div>
                         </div>
                     </div>
                 </div>

@@ -14,13 +14,15 @@ namespace SmartWasteCollectionSystem.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IBaseRepository<User> _user;
         private readonly IBaseRepository<BinLog> _bin;
+        private readonly IBaseRepository<MonthlyDue> _due;
 
         public HomeController(
             ILogger<HomeController> logger, 
             SwcsdbContext context,
             IBaseRepository<GarbageCollectionSchedule> schedule,
             IBaseRepository<User> user,
-            IBaseRepository<BinLog> bin
+            IBaseRepository<BinLog> bin,
+            IBaseRepository<MonthlyDue> due
         )
         {
             _logger = logger;
@@ -28,6 +30,7 @@ namespace SmartWasteCollectionSystem.Controllers
             _schedule = schedule;
             _user = user;
             _bin = bin;
+            _due = due;
         }
 
         [Authorize]
@@ -54,9 +57,15 @@ namespace SmartWasteCollectionSystem.Controllers
                 dashboardData.BinStatusPercentage = _bin.GetByCondition(b =>
                     b.UserId == Guid.Parse(User.FindFirstValue("Id"))
                 ).OrderByDescending(b => b.CreatedDate).Select(b => b.BinStatusPercentage).FirstOrDefault();
-            }
 
-                return View(dashboardData);
+                dashboardData.MonthlyDue = _due.GetByCondition(d =>
+                    d.UserId == Guid.Parse(User.FindFirstValue("Id")) &&
+                    d.DueDate.Month == DateTime.Now.Month &&
+                    d.DueDate.Year == DateTime.Now.Year &&
+                    !d.IsPaid
+                ).FirstOrDefault();
+            }
+            return View(dashboardData);
         }
 
         public IActionResult Privacy()

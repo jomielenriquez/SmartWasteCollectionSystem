@@ -85,7 +85,7 @@
             <Custom:TextBox id="PaidDate"
                             label="PaidDate"
                             type="date"
-                            value="@(Model.Data.PaidDate ?? DateTime.Now).ToString("yyyy-MM-dd")"
+                            value="@((Model.Data.PaidDate ?? DateTime.Now).ToString("yyyy-MM-dd"))"
                             placeholder="">
             </Custom:TextBox>
 
