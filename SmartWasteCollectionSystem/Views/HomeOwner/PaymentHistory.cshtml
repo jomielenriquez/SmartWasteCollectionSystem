@@ -1,0 +1,16 @@
+﻿@model List<SmartWasteCollectionSystem.Models.MonthlyDue>
+
+@foreach(var payment in Model)
+{
+    <div class="alert alert-light d-flex align-items-center" role="alert" style="border: 1px solid #dad8d8">
+        <i class="fa-solid fa-money-bills me-4 text-success"></i>
+        <div>
+            <h5 class="alert-heading">@payment.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-PH"))</h5>
+
+            <p>
+                @payment.StarDate.ToString("MMMM d, yyyy") - @payment.EndDate.ToString("MMMM d, yyyy") | @payment.DueDate.ToString("MMMM d, yyyy")
+            </p>
+        </div>
+    </div>
+}
+

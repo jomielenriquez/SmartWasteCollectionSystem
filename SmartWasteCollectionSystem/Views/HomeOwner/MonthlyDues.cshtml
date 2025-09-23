@@ -1,0 +1,61 @@
+﻿@using System.Security.Claims
+@model List<SmartWasteCollectionSystem.Models.MonthlyDue>
+@{
+    ViewData["Title"] = "Monthly Dues";
+    var tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila"); // Change to your time zone
+    var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
+    var thisMonth = Model.FirstOrDefault(d =>
+        d.UserId == Guid.Parse(User.FindFirstValue("Id")) &&
+        d.DueDate.Month == localTime.Month &&
+        d.DueDate.Year == localTime.Year &&
+        !d.IsPaid
+    );
+
+    var nextMonth = Model.FirstOrDefault(d =>
+        d.UserId == Guid.Parse(User.FindFirstValue("Id")) &&
+        d.DueDate.Month == localTime.AddMonths(1).Month &&
+        d.DueDate.Year == localTime.AddMonths(1).Year &&
+        !d.IsPaid
+    );
+
+    var prevPayment = Model.Where(d =>
+        d.UserId == Guid.Parse(User.FindFirstValue("Id")) &&
+        d.IsPaid
+    ).OrderByDescending(d => d.CreatedDate).FirstOrDefault();
+}
+
+<div class="alert alert-light d-flex align-items-center" role="alert" style="border: 1px solid #dad8d8">
+    <i class="fa-solid fa-money-bills me-4 text-success"></i>
+    <div>
+        <h5 class="alert-heading">This Month's Due</h5>
+
+        <p>
+            @(thisMonth != null ? thisMonth.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-PH")) + " Due before " + @thisMonth.DueDate.ToString("MMMM d") : "No billing yet")
+        </p>
+    </div>
+</div>
+
+<div class="alert alert-light d-flex align-items-center" role="alert" style="border: 1px solid #dad8d8">
+    <i class="fa-solid fa-calendar me-4 text-success"></i>
+    <div>
+        <h5 class="alert-heading">Upcoming Dues</h5>
+
+        <p>
+            @(nextMonth != null ? nextMonth.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-PH")) + " - " + @nextMonth.DueDate.ToString("MMMM d") : "No billing yet")
+        </p>
+    </div>
+</div>
+
+<a href="PaymentHistory" class="text-decoration-none">
+    <div class="alert alert-light d-flex align-items-center" role="alert" style="border: 1px solid #dad8d8">
+        <i class="fa-solid fa-clock-rotate-left me-4 text-success"></i>
+        <div>
+            <h5 class="alert-heading">Payment History</h5>
+
+            <p>
+                Last Paid @prevPayment.DueDate.ToString("MMMM")
+            </p>
+        </div>
+    </div>
+
+</a>
