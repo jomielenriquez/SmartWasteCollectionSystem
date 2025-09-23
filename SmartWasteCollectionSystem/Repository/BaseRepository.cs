@@ -25,11 +25,11 @@ namespace SmartWasteCollectionSystem.Repository
                     if (prop.PropertyType == typeof(DateTime))
                     {
                         var value = (DateTime)prop.GetValue(data);
-                        // Only convert if not default value
                         if (value != default)
                         {
-                            // Assume value is UTC, convert to configured time zone
-                            prop.SetValue(data, TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(value, DateTimeKind.Utc), _timeZoneInfo));
+                            // Convert local/server time to UTC, then to target time zone
+                            var utcValue = DateTime.SpecifyKind(value, DateTimeKind.Local).ToUniversalTime();
+                            prop.SetValue(data, TimeZoneInfo.ConvertTimeFromUtc(utcValue, _timeZoneInfo));
                         }
                     }
                     else if (prop.PropertyType == typeof(DateTime?))
@@ -37,7 +37,8 @@ namespace SmartWasteCollectionSystem.Repository
                         var value = (DateTime?)prop.GetValue(data);
                         if (value.HasValue && value.Value != default)
                         {
-                            prop.SetValue(data, TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(value.Value, DateTimeKind.Utc), _timeZoneInfo));
+                            var utcValue = DateTime.SpecifyKind(value.Value, DateTimeKind.Local).ToUniversalTime();
+                            prop.SetValue(data, TimeZoneInfo.ConvertTimeFromUtc(utcValue, _timeZoneInfo));
                         }
                     }
                 }

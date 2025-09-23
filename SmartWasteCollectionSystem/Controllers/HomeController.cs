@@ -13,18 +13,21 @@ namespace SmartWasteCollectionSystem.Controllers
         private readonly IBaseRepository<GarbageCollectionSchedule> _schedule;
         private readonly ILogger<HomeController> _logger;
         private readonly IBaseRepository<User> _user;
+        private readonly IBaseRepository<BinLog> _bin;
 
         public HomeController(
             ILogger<HomeController> logger, 
             SwcsdbContext context,
             IBaseRepository<GarbageCollectionSchedule> schedule,
-            IBaseRepository<User> user
+            IBaseRepository<User> user,
+            IBaseRepository<BinLog> bin
         )
         {
             _logger = logger;
             _context = context;
             _schedule = schedule;
             _user = user;
+            _bin = bin;
         }
 
         [Authorize]
@@ -45,10 +48,15 @@ namespace SmartWasteCollectionSystem.Controllers
                     u.CreatedDate.Year == DateTime.Now.Year &&
                     u.CreatedDate.Month == DateTime.Now.Month
                 ).ToList();
-
+            }
+            else if (userRole == "Home Owner")
+            {
+                dashboardData.BinStatusPercentage = _bin.GetByCondition(b =>
+                    b.UserId == Guid.Parse(User.FindFirstValue("Id"))
+                ).OrderByDescending(b => b.CreatedDate).Select(b => b.BinStatusPercentage).FirstOrDefault();
             }
 
-            return View(dashboardData);
+                return View(dashboardData);
         }
 
         public IActionResult Privacy()

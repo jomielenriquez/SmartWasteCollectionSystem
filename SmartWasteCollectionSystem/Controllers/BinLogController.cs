@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using SmartWasteCollectionSystem.Interface;
 using SmartWasteCollectionSystem.Models;
 using SmartWasteCollectionSystem.Repository;
+using System.Security.Claims;
 
 namespace SmartWasteCollectionSystem.Controllers
 {
@@ -91,5 +92,19 @@ namespace SmartWasteCollectionSystem.Controllers
             }
             return StatusCode(500, new { message = "An error occurred while updating bin status."});
         }
+        [HttpGet]
+        public IActionResult GetBinStatus()
+        {
+            var bin = _bin.GetByCondition(b => 
+                b.UserId == Guid.Parse(User.FindFirstValue("Id"))
+            ).OrderByDescending(b => b.CreatedDate).Select(b => new 
+            {
+                b.BinStatusPercentage,
+                b.CreatedDate
+            }).FirstOrDefault();
+
+            return Ok(bin);
+        }
+
     }
 }
