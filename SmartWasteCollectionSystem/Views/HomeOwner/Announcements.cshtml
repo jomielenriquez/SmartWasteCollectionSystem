@@ -1,0 +1,25 @@
+﻿@model List<SmartWasteCollectionSystem.Models.Announcement>
+@{
+    ViewData["Title"] = "Announcements";
+}
+@foreach(var announcement in Model)
+{
+    <div class="alert alert-light d-flex align-items-center" role="alert" style="border: 1px solid #dad8d8">
+        <i class="fa-solid fa-bullhorn me-4 text-success"></i>
+        <div>
+            <h5 class="alert-heading">@announcement.Title</h5>
+            <p>
+                @Html.Raw(announcement.Message)
+            </p>
+            <hr />
+            <p class="mb-0"><i class="fa-solid fa-calendar-check"></i> @announcement.CreatedDate.ToString("MMMM d, yyyy h:mm tt")</p>
+        </div>
+    </div>
+}
+
+@if(Model.Count == 0)
+{
+    <div class="alert alert-light" role="alert">
+        No announcements
+    </div>
+}

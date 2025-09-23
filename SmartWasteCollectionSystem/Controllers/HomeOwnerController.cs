@@ -8,25 +8,40 @@ namespace SmartWasteCollectionSystem.Controllers
 {
     public class HomeOwnerController : Controller
     {
-        private readonly IBaseRepository<MonthlyDue> monthlyDue;
-        public HomeOwnerController(IBaseRepository<MonthlyDue> monthlyDue)
+        private readonly IBaseRepository<MonthlyDue> _monthlyDue;
+        private readonly IBaseRepository<Announcement> _announcement;
+        public HomeOwnerController(IBaseRepository<MonthlyDue> monthlyDue, IBaseRepository<Announcement> announcement)
         {
-            this.monthlyDue = monthlyDue;
+            _monthlyDue = monthlyDue;
+            _announcement = announcement;
         }
         [Authorize(Roles = "Home Owner")]
         public IActionResult MonthlyDues()
         {
-            var result = monthlyDue.GetByConditionAndIncludes(x => 
+            var result = _monthlyDue.GetByConditionAndIncludes(x => 
                 x.UserId == Guid.Parse(User.FindFirstValue("Id")), "User").ToList();
             return View(result);
         }
         [Authorize(Roles = "Home Owner")]
         public IActionResult PaymentHistory()
         {
-            var result = monthlyDue.GetByConditionAndIncludes(x =>
+            var result = _monthlyDue.GetByConditionAndIncludes(x =>
                 x.UserId == Guid.Parse(User.FindFirstValue("Id")) 
                 && x.IsPaid,
                 "User")
+                .OrderByDescending(x => x.CreatedDate).ToList();
+            return View(result);
+        }
+        [Authorize(Roles = "Home Owner")]
+        public IActionResult Announcements()
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila"); // Change to your time zone
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
+
+            var result = _announcement.GetByConditionAndIncludes(x =>
+                x.IsActive
+                && x.StartDate <= DateOnly.FromDateTime(localTime)
+                && x.EndDate >= DateOnly.FromDateTime(localTime))
                 .OrderByDescending(x => x.CreatedDate).ToList();
             return View(result);
         }
