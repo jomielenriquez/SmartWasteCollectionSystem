@@ -1,3 +1,4 @@
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -16,7 +17,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[BinLog]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[BinLog]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -32,7 +33,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DayOfWeek]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[DayOfWeek]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -46,7 +47,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Emails]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[Emails]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -65,7 +66,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[FrequencyType]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[FrequencyType]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -79,7 +80,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GarbageCollectionSchedule]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[GarbageCollectionSchedule]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -100,7 +101,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MonthlyDues]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[MonthlyDues]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -121,7 +122,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserRole]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[UserRole]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -136,7 +137,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 22/09/2025 9:31:55 pm ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 24/09/2025 7:20:39 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -163,11 +164,17 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-INSERT [dbo].[Announcements] ([AnnouncementId], [Title], [Message], [StartDate], [EndDate], [IsActive], [CreatedDate]) VALUES (N'683ac587-efdd-4438-b039-3e03f851187a', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', CAST(N'2025-09-21' AS Date), CAST(N'2025-09-21' AS Date), 1, CAST(N'2025-09-21T22:40:36.663' AS DateTime))
+INSERT [dbo].[Announcements] ([AnnouncementId], [Title], [Message], [StartDate], [EndDate], [IsActive], [CreatedDate]) VALUES (N'683ac587-efdd-4438-b039-3e03f851187a', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', CAST(N'2025-09-21' AS Date), CAST(N'2025-09-30' AS Date), 1, CAST(N'2025-09-21T22:40:36.663' AS DateTime))
 GO
 INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'4d55ba74-3e1a-4684-9129-002cf85eedfe', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 1, CAST(N'2025-09-22T21:27:38.680' AS DateTime))
 GO
 INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'd7756ba4-1091-4323-b645-bf796d1dcc46', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 10, CAST(N'2025-09-22T21:28:01.593' AS DateTime))
+GO
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'5494afb9-7d4b-4754-b9be-d6131f99c28c', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 20, CAST(N'2025-09-23T20:48:28.960' AS DateTime))
+GO
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'84a6d253-e973-49aa-b5d7-e84f25fe8849', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 11, CAST(N'2025-09-23T19:47:25.723' AS DateTime))
+GO
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'e8a99e67-69e6-42b2-bace-fe2fb16e2cf9', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 12, CAST(N'2025-09-23T19:49:53.687' AS DateTime))
 GO
 INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'0d52c731-5f63-4246-abd2-264264f83945', N'Tuesday')
 GO
@@ -185,13 +192,19 @@ INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'a9ed7555-37f6-4c52-b23
 GO
 INSERT [dbo].[Emails] ([EmailId], [Title], [Message], [Recipients], [IsSent], [SentDate], [CreatedDate]) VALUES (N'57bb77d2-0cb5-4e75-932f-dc7f99e34933', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', N'j@gmail.com;enriquez.jliquigan@gmail.com;jom72056@gmail.com;smartbin422@gmail.com', 1, CAST(N'2025-09-21T22:40:45.460' AS DateTime), CAST(N'2025-09-21T22:41:00.600' AS DateTime))
 GO
+INSERT [dbo].[Emails] ([EmailId], [Title], [Message], [Recipients], [IsSent], [SentDate], [CreatedDate]) VALUES (N'90814146-a5f7-40de-a080-ec4f1e49bc83', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', N'j@gmail.com;enriquez.jliquigan@gmail.com;jom72056@gmail.com;smartbin422@gmail.com', 1, CAST(N'2025-09-23T22:57:23.270' AS DateTime), CAST(N'2025-09-23T22:57:36.880' AS DateTime))
+GO
 INSERT [dbo].[FrequencyType] ([FrequencyTypeID], [FrequencyName]) VALUES (N'2d043b87-eea9-42a9-a9c8-7cd69e500026', N'Daily')
 GO
 INSERT [dbo].[FrequencyType] ([FrequencyTypeID], [FrequencyName]) VALUES (N'48ef4af4-d1d8-4b30-a9ca-8f17e02a5e78', N'Weekly')
 GO
 INSERT [dbo].[FrequencyType] ([FrequencyTypeID], [FrequencyName]) VALUES (N'8c598bb2-14ae-405a-b907-bcdd544af28e', N'Monthly')
 GO
-INSERT [dbo].[GarbageCollectionSchedule] ([GarbageCollectionScheduleID], [DayOfWeekID], [FrequencyTypeID], [CollectionTime], [EffectiveFrom], [EffectiveTo], [IsActive], [Notes], [CreatedDate]) VALUES (N'12a00426-25ab-45fd-93bc-466b0809eeef', N'0d52c731-5f63-4246-abd2-264264f83945', N'48ef4af4-d1d8-4b30-a9ca-8f17e02a5e78', CAST(N'23:00:00' AS Time), CAST(N'2025-09-20' AS Date), CAST(N'2025-09-20' AS Date), 1, N'    Test', CAST(N'2025-09-20T12:55:33.890' AS DateTime))
+INSERT [dbo].[GarbageCollectionSchedule] ([GarbageCollectionScheduleID], [DayOfWeekID], [FrequencyTypeID], [CollectionTime], [EffectiveFrom], [EffectiveTo], [IsActive], [Notes], [CreatedDate]) VALUES (N'12a00426-25ab-45fd-93bc-466b0809eeef', N'0d52c731-5f63-4246-abd2-264264f83945', N'48ef4af4-d1d8-4b30-a9ca-8f17e02a5e78', CAST(N'23:00:00' AS Time), CAST(N'2025-09-01' AS Date), CAST(N'2025-09-19' AS Date), 1, N'      Test', CAST(N'2025-09-20T12:55:33.890' AS DateTime))
+GO
+INSERT [dbo].[MonthlyDues] ([MonthlyDueID], [UserID], [Amount], [DueDate], [IsPaid], [PaidDate], [CreatedDate], [StarDate], [EndDate]) VALUES (N'8d970d16-708d-4544-a86c-439657c8e3aa', N'dfbb2211-1cf7-45c0-b322-1ae3afed2be8', CAST(1111.00 AS Decimal(10, 2)), CAST(N'2025-09-23T08:00:00.000' AS DateTime), 0, NULL, CAST(N'2025-09-23T19:10:32.557' AS DateTime), CAST(N'2025-09-23T08:00:00.000' AS DateTime), CAST(N'2025-09-23T08:00:00.000' AS DateTime))
+GO
+INSERT [dbo].[MonthlyDues] ([MonthlyDueID], [UserID], [Amount], [DueDate], [IsPaid], [PaidDate], [CreatedDate], [StarDate], [EndDate]) VALUES (N'817c1eb5-4971-4a66-bafa-cc9a23b62c33', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', CAST(1699.00 AS Decimal(10, 2)), CAST(N'2025-09-26T00:00:00.000' AS DateTime), 1, CAST(N'2025-09-23T00:00:00.000' AS DateTime), CAST(N'2025-09-23T20:58:38.403' AS DateTime), CAST(N'2025-09-23T00:00:00.000' AS DateTime), CAST(N'2025-09-23T00:00:00.000' AS DateTime))
 GO
 INSERT [dbo].[MonthlyDues] ([MonthlyDueID], [UserID], [Amount], [DueDate], [IsPaid], [PaidDate], [CreatedDate], [StarDate], [EndDate]) VALUES (N'f7eb258b-09a1-4e84-899f-dc61e0873820', N'dfbb2211-1cf7-45c0-b322-1ae3afed2be8', CAST(1299.00 AS Decimal(10, 2)), CAST(N'2025-09-30T00:00:00.000' AS DateTime), 1, NULL, CAST(N'2025-09-19T21:27:28.303' AS DateTime), CAST(N'2025-09-01T00:00:00.000' AS DateTime), CAST(N'2025-09-30T00:00:00.000' AS DateTime))
 GO
@@ -273,5 +286,7 @@ REFERENCES [dbo].[Users] ([UserID])
 GO
 ALTER TABLE [dbo].[Users]  WITH CHECK ADD  CONSTRAINT [FK_Users_UserRoleID] FOREIGN KEY([UserRoleId])
 REFERENCES [dbo].[UserRole] ([UserRoleID])
+GO
+ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_UserRoleID]
 GO
 
