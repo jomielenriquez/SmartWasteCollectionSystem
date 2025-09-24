@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <Preferences.h>
+#include <HTTPClient.h>
 
 Preferences preferences;
 WebServer server(80);
@@ -8,10 +9,10 @@ WebServer server(80);
 bool isConnected = false;
 String connectedSSID = "";
 String wifiList = "";
+String apiKey = "";
 
-// -------- HTML Page --------
-String buildPage() {
-  String page = R"rawliteral(
+String PageHeader(String title){
+  String html = R"rawliteral(
   <!DOCTYPE html><html><head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
@@ -19,16 +20,25 @@ String buildPage() {
     .container{max-width:420px;margin:auto;background:#fff;padding:18px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,.08)}
     h2{text-align:center;color:#333}
     label{display:block;margin:12px 0 6px;font-weight:600}
-    select,input[type=password],button{width:100%;padding:12px;margin-bottom:12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+    select,input,a,button{width:100%;padding:12px;margin-bottom:12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
     .btn-primary{background:#28a745;color:#fff;border:none}
     .btn-danger{background:#dc3545;color:#fff;border:none}
     .status{text-align:center;font-size:16px;color:green;margin-bottom:10px}
     .small{font-size:13px;color:#666;text-align:center}
   </style>
   </head><body><div class="container">
-  <h2>WiFi Setup</h2>
   )rawliteral";
+  html += "<h2>" + title + "</h2>";
+  return html;
+}
 
+String pageFooter() {
+  return "</div></body></html>";
+}
+
+// -------- HTML Page --------
+String buildPage() {
+  String page = PageHeader("Wifi Setup");
   if (isConnected) {
     page += "<div class='status'>Connected to " + connectedSSID + "</div>";
     page += "<div class='small'>IP on Wi-Fi: " + WiFi.localIP().toString() + "</div>";
@@ -39,6 +49,19 @@ String buildPage() {
         <button type="submit" class="btn-danger">Reset Wi-Fi</button>
       </form>
     )rawliteral";
+
+    page += R"rawliteral(
+      <form action="/postpage" method="GET">
+        <button type="submit" class="btn-primary">Go to Post Page</button>
+      </form>
+    )rawliteral";
+    page += R"rawliteral(
+      <form action="/apikey" method="GET">
+        <button type="submit" class="btn-primary">Set API Key</button>
+      </form>
+    )rawliteral";
+    // page += "<a href='/postpage' class='btn-primary'>Go to Post Page</a><br>";
+    // page += "<a href='/apikey' class='btn-primary'>Set API Key</a><br>";
   } else {
     page += "<form action='/connect' method='POST'>";
     page += "<label for='ssid'>SSID:</label>";
@@ -50,7 +73,7 @@ String buildPage() {
     page += "<button type='submit' class='btn-primary'>Connect</button></form>";
   }
 
-  page += "</div></body></html>";
+  page += pageFooter();
   return page;
 }
 
@@ -60,17 +83,14 @@ void handleRoot() { server.send(200, "text/html", buildPage()); }
 void handleConnect() {
   String ssid = server.arg("ssid");
   String pass = server.arg("pass");
-
   // Save to flash
   preferences.begin("wifi", false);
   preferences.putString("ssid", ssid);
   preferences.putString("pass", pass);
   preferences.end();
-
   server.send(200, "text/html",
               "<html><body><h3>Connecting to " + ssid +
               "...</h3><meta http-equiv='refresh' content='5;url=/' /></body></html>");
-
   connectedSSID = ssid;
   WiFi.begin(ssid.c_str(), pass.c_str());
 }
@@ -83,6 +103,66 @@ void handleReset() {
   server.send(200, "text/html", "<html><body><h3>Wi-Fi credentials cleared. Rebooting...</h3></body></html>");
   delay(1000);
   ESP.restart();
+}
+
+// Page with POST button
+void handlePostPage() {
+  String page = PageHeader("Send Bin Status");
+  page += "<form action='/sendpost' method='POST'>";
+  page += "<label for='apiKey'>API Key:</label><input type='text' name='apiKey' id='apiKey' value='" + apiKey + "'>";
+  page += "<label for='percentage'>Percentage:</label><input type='text' name='percentage' id='percentage'>";
+  page += "<button type='submit' class='btn-primary'>Send</button></form>";
+  page += pageFooter();
+  server.send(200, "text/html", page);
+}
+
+void handleSendPost() {
+  String key = server.arg("apiKey");
+  String perc = server.arg("percentage");
+
+  if (key == "" || perc == "") {
+    server.send(200, "text/html", "API Key or Percentage missing!");
+    return;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    http.begin("https://ecokonek.somee.com/BinLog/UpdateBinStatus");
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    String payload = "apiKey=" + key + "&percentage=" + perc;
+    int httpCode = http.POST(payload);
+
+    if (httpCode > 0) {
+      String response = http.getString();
+      server.send(200, "text/html", "POST Sent!<br>Response: " + response);
+    } else {
+      server.send(200, "text/html", "Error sending POST");
+    }
+    http.end();
+  } else {
+    server.send(200, "text/html", "Not connected to WiFi!");
+  }
+}
+
+void handleApiKeyPage() {
+  String page = PageHeader("Save API Key");
+  page += "<form action='/saveApiKey' method='POST'>";
+  page += "<label for='apiKey'>Percentage:</label><input type='text' name='apiKey' id='apiKey' value='" + apiKey + "'>";
+  page += "<button type='submit' class='btn-primary'>Save</button></form>";
+  page += pageFooter();
+  server.send(200, "text/html", page);
+}
+
+void handleSaveApiKey() {
+  String key = server.arg("apiKey");
+  if (key != "") {
+    preferences.putString("apiKey", key);
+    apiKey = key;
+    server.send(200, "text/html", "API Key saved!<br><a href='/'>Back</a>");
+  } else {
+    server.send(200, "text/html", "API Key missing!");
+  }
 }
 
 // -------- Setup --------
@@ -118,6 +198,10 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/connect", HTTP_POST, handleConnect);
   server.on("/reset", HTTP_POST, handleReset);
+  server.on("/postpage", handlePostPage);
+  server.on("/sendpost", HTTP_POST, handleSendPost);
+  server.on("/apikey", handleApiKeyPage);
+  server.on("/saveApiKey", HTTP_POST, handleSaveApiKey);
   server.begin();
 }
 
