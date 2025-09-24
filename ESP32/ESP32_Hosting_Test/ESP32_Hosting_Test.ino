@@ -7,6 +7,8 @@ Preferences preferences;
 WebServer server(80);
 
 bool isConnected = false;
+String SaveApiMessage = "";
+String SaveApiKeyMessage = "";
 String connectedSSID = "";
 String wifiList = "";
 String apiKey = "";
@@ -21,6 +23,7 @@ String PageHeader(String title){
     h2{text-align:center;color:#333}
     label{display:block;margin:12px 0 6px;font-weight:600}
     select,input,a,button{width:100%;padding:12px;margin-bottom:12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+    input{width:95% !important}
     .btn-primary{background:#28a745;color:#fff;border:none}
     .btn-danger{background:#dc3545;color:#fff;border:none}
     .status{text-align:center;font-size:16px;color:green;margin-bottom:10px}
@@ -60,8 +63,6 @@ String buildPage() {
         <button type="submit" class="btn-primary">Set API Key</button>
       </form>
     )rawliteral";
-    // page += "<a href='/postpage' class='btn-primary'>Go to Post Page</a><br>";
-    // page += "<a href='/apikey' class='btn-primary'>Set API Key</a><br>";
   } else {
     page += "<form action='/connect' method='POST'>";
     page += "<label for='ssid'>SSID:</label>";
@@ -108,11 +109,13 @@ void handleReset() {
 // Page with POST button
 void handlePostPage() {
   String page = PageHeader("Send Bin Status");
+  if (SaveApiMessage != "") {page += "<div class='status'>" + SaveApiMessage + "</div>";}
   page += "<form action='/sendpost' method='POST'>";
   page += "<label for='apiKey'>API Key:</label><input type='text' name='apiKey' id='apiKey' value='" + apiKey + "'>";
   page += "<label for='percentage'>Percentage:</label><input type='text' name='percentage' id='percentage'>";
   page += "<button type='submit' class='btn-primary'>Send</button></form>";
   page += pageFooter();
+  SaveApiMessage = "";
   server.send(200, "text/html", page);
 }
 
@@ -135,22 +138,27 @@ void handleSendPost() {
 
     if (httpCode > 0) {
       String response = http.getString();
-      server.send(200, "text/html", "POST Sent!<br>Response: " + response);
+      SaveApiMessage = "POST Sent!";
+      handlePostPage();
     } else {
-      server.send(200, "text/html", "Error sending POST");
+      SaveApiMessage = "Error sending POST";
+      handlePostPage();
     }
     http.end();
   } else {
-    server.send(200, "text/html", "Not connected to WiFi!");
+    SaveApiMessage = "Not connected to WiFi!";
+    handlePostPage();
   }
 }
 
 void handleApiKeyPage() {
   String page = PageHeader("Save API Key");
+  if (SaveApiKeyMessage != "") {page += "<div class='status'>" + SaveApiKeyMessage + "</div>";}
   page += "<form action='/saveApiKey' method='POST'>";
   page += "<label for='apiKey'>Percentage:</label><input type='text' name='apiKey' id='apiKey' value='" + apiKey + "'>";
   page += "<button type='submit' class='btn-primary'>Save</button></form>";
   page += pageFooter();
+  SaveApiKeyMessage = "";
   server.send(200, "text/html", page);
 }
 
@@ -159,9 +167,11 @@ void handleSaveApiKey() {
   if (key != "") {
     preferences.putString("apiKey", key);
     apiKey = key;
-    server.send(200, "text/html", "API Key saved!<br><a href='/'>Back</a>");
+    SaveApiKeyMessage = "API Key saved!";
+    handleApiKeyPage();
   } else {
-    server.send(200, "text/html", "API Key missing!");
+    SaveApiKeyMessage = "API Key Missing";
+    handleApiKeyPage();
   }
 }
 
@@ -178,7 +188,9 @@ void setup() {
   preferences.begin("wifi", true);
   String savedSSID = preferences.getString("ssid", "");
   String savedPASS = preferences.getString("pass", "");
+  apiKey = preferences.getString("apiKey", "");
   preferences.end();
+
 
   if (savedSSID != "") {
     Serial.println("Found saved Wi-Fi. Attempting to connect...");
