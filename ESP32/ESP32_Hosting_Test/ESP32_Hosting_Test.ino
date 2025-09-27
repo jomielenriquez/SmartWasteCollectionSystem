@@ -2,6 +2,10 @@
 #include <WebServer.h>
 #include <Preferences.h>
 #include <HTTPClient.h>
+#include <vector>
+#include <algorithm>
+
+std::vector<String> wifiVectorList;
 
 Preferences preferences;
 WebServer server(80);
@@ -120,20 +124,24 @@ void handlePostPage() {
 }
 
 void handleSendPost() {
-  String key = server.arg("apiKey");
+  apiKey = server.arg("apiKey");
   String perc = server.arg("percentage");
 
-  if (key == "" || perc == "") {
+  if (apiKey == "" || perc == "") {
     server.send(200, "text/html", "API Key or Percentage missing!");
     return;
   }
+
+  preferences.begin("wifi", false);
+  preferences.putString("apiKey", apiKey);
+  preferences.end();
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     http.begin("https://ecokonek.somee.com/BinLog/UpdateBinStatus");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    String payload = "apiKey=" + key + "&percentage=" + perc;
+    String payload = "apiKey=" + apiKey + "&percentage=" + perc;
     int httpCode = http.POST(payload);
 
     if (httpCode > 0) {
@@ -163,10 +171,11 @@ void handleApiKeyPage() {
 }
 
 void handleSaveApiKey() {
-  String key = server.arg("apiKey");
-  if (key != "") {
-    preferences.putString("apiKey", key);
-    apiKey = key;
+  apiKey = server.arg("apiKey");
+  if (apiKey != "") {
+    preferences.begin("wifi", false);
+    preferences.putString("apiKey", apiKey);
+    preferences.end();
     SaveApiKeyMessage = "API Key saved!";
     handleApiKeyPage();
   } else {
@@ -189,21 +198,26 @@ void setup() {
   String savedSSID = preferences.getString("ssid", "");
   String savedPASS = preferences.getString("pass", "");
   apiKey = preferences.getString("apiKey", "");
+  Serial.print("API Key: "); Serial.println(apiKey);
   preferences.end();
-
-
-  if (savedSSID != "") {
-    Serial.println("Found saved Wi-Fi. Attempting to connect...");
-    WiFi.begin(savedSSID.c_str(), savedPASS.c_str());
-    connectedSSID = savedSSID;
-  } else {
-    Serial.println("No saved Wi-Fi. Waiting for config.");
-  }
-
+  
   // Scan networks
   int n = WiFi.scanNetworks();
   for (int i = 0; i < n; ++i) {
+    wifiVectorList.push_back(WiFi.SSID(i));
     wifiList += "<option value='" + WiFi.SSID(i) + "'>" + WiFi.SSID(i) + "</option>";
+  }
+
+  if (savedSSID != "") {
+    if (std::find(wifiVectorList.begin(), wifiVectorList.end(), savedSSID) != wifiVectorList.end()) {
+      Serial.println("Found saved Wi-Fi. Attempting to connect...");
+      WiFi.begin(savedSSID.c_str(), savedPASS.c_str());
+      connectedSSID = savedSSID;
+    } else {
+      Serial.println("Saved Wifi is not in range.");
+    }
+  } else {
+    Serial.println("No saved Wi-Fi. Waiting for config.");
   }
 
   // Webserver
