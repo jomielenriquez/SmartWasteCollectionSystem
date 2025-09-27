@@ -163,7 +163,7 @@ void handleApiKeyPage() {
   String page = PageHeader("Save API Key");
   if (SaveApiKeyMessage != "") {page += "<div class='status'>" + SaveApiKeyMessage + "</div>";}
   page += "<form action='/saveApiKey' method='POST'>";
-  page += "<label for='apiKey'>Percentage:</label><input type='text' name='apiKey' id='apiKey' value='" + apiKey + "'>";
+  page += "<label for='apiKey'>API Key:</label><input type='text' name='apiKey' id='apiKey' value='" + apiKey + "'>";
   page += "<button type='submit' class='btn-primary'>Save</button></form>";
   page += pageFooter();
   SaveApiKeyMessage = "";
