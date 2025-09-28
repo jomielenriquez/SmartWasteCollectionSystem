@@ -66,11 +66,17 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-light" asp-area="" asp-controller="BinLog" asp-action="BinLogListScreen"><i class="fa-regular fa-trash-can"></i> Bin Logs</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="HomeOwner" asp-action="Announcements"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+                                </li>
                             }
                             @if (roles == "Garbage Collector")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-light" asp-area="" asp-controller="GarbageCollector" asp-action="RouteMapping"><i class="fa-solid fa-location-dot"></i> Route Mapping</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="HomeOwner" asp-action="Announcements"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
                                 </li>
                             }
                         </ul>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartWasteCollectionSystem.Interface;
 using SmartWasteCollectionSystem.Models;
 
@@ -14,10 +15,11 @@ namespace SmartWasteCollectionSystem.Controllers
             _user = user;
             _garbageCollectionSchedule = garbageCollectionSchedule;
         }
-
+        [Authorize(Roles = "Garbage Collector")]
         public IActionResult RouteMapping()
         {
-            return View();
+            var user = _user.GetAll();
+            return View(user);
         }
     }
 }

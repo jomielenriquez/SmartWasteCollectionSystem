@@ -32,7 +32,7 @@ namespace SmartWasteCollectionSystem.Controllers
                 .OrderByDescending(x => x.CreatedDate).ToList();
             return View(result);
         }
-        [Authorize(Roles = "Home Owner")]
+        [Authorize(Roles = "Home Owner, Garbage Collector")]
         public IActionResult Announcements()
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila"); // Change to your time zone
