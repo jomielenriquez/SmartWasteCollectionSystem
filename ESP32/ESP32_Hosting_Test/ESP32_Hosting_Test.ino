@@ -1,3 +1,6 @@
+// References
+// Ultrasonic with esp32 : https://randomnerdtutorials.com/esp32-hc-sr04-ultrasonic-arduino/
+
 #include <WiFi.h>
 #include <WebServer.h>
 #include <Preferences.h>
@@ -17,14 +20,19 @@ String connectedSSID = "";
 String wifiList = "";
 String apiKey = "";
 
+// Utrasonic
 const int trigPin = 5;
 const int echoPin = 18;
-//define sound speed in cm/uS
-#define SOUND_SPEED 0.034
+#define SOUND_SPEED 0.034 //define sound speed in cm/uS
 #define CM_TO_INCH 0.393701
 long duration;
 float distanceCm;
 float distanceInch;
+
+// Motion Sensor
+const int PIN_TO_SENSOR = 19; // GPIO19 pin connected to OUTPUT pin of sensor
+int pinStateCurrent   = LOW;  // current state of pin
+int pinStatePrevious  = LOW;  // previous state of pin
 
 String PageHeader(String title){
   String html = R"rawliteral(
@@ -265,6 +273,9 @@ void setup() {
   //UltraSonic
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+
+  //Motion Sensor
+  pinMode(PIN_TO_SENSOR, INPUT); // set ESP32 pin to input mode to read value from OUTPUT pin of sensor
 }
 
 // -------- Loop --------
@@ -277,7 +288,20 @@ void loop() {
     Serial.println("STA IP: " + WiFi.localIP().toString());
   }
 
-  Serial.print("Distance (inch): "); Serial.println(readUltraSonic());
+  //Serial.print("Distance (inch): "); Serial.println(readUltraSonic());
+
+  pinStatePrevious = pinStateCurrent; // store old state
+  pinStateCurrent = digitalRead(PIN_TO_SENSOR);   // read new state
+
+  if (pinStatePrevious == LOW && pinStateCurrent == HIGH) {   // pin state change: LOW -> HIGH
+    Serial.println("Motion detected!");
+    // TODO: turn on alarm, light or activate a device ... here
+  }
+  else
+  if (pinStatePrevious == HIGH && pinStateCurrent == LOW) {   // pin state change: HIGH -> LOW
+    Serial.println("Motion stopped!");
+    // TODO: turn off alarm, light or deactivate a device ... here
+  }
   
   delay(1000);
 }
