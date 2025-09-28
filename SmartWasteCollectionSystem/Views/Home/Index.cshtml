@@ -259,7 +259,7 @@ else if (userRole == "Garbage Collector")
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
     <div id="map" style="height: 600px;"></div>
-    <script>
+    @* <script>
         // Initialize map
         var map = L.map('map').setView([14.5995, 120.9842], 13); // Example: Manila
 
@@ -279,6 +279,164 @@ else if (userRole == "Garbage Collector")
                 serviceUrl: 'https://router.project-osrm.org/route/v1'
             })
         }).addTo(map);
+    </script> *@
+    @* using the current location *@
+    @* <script>
+        // Initialize map (default view before location is found)
+        var map = L.map('map').setView([14.5995, 120.9842], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Try to get current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+
+                // Center the map on user location
+                map.setView([userLat, userLng], 14);
+
+                // Add a marker for current location
+                L.marker([userLat, userLng]).addTo(map)
+                    .bindPopup("You are here")
+                    .openPopup();
+
+                // Add routing from current location to destination
+                L.Routing.control({
+                    waypoints: [
+                        L.latLng(userLat, userLng),           // Start = current location
+                        L.latLng(14.073443, 121.148041)      // End = destination
+                    ],
+                    routeWhileDragging: true,
+                    router: L.Routing.osrmv1({
+                        serviceUrl: 'https://router.project-osrm.org/route/v1'
+                    })
+                }).addTo(map);
+
+            }, function (error) {
+                alert("Unable to retrieve your location: " + error.message);
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        } 
+    </script>*@
+
+    @* <script>
+        var map = L.map('map').setView([14.5995, 120.9842], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var userMarker = null;
+        var routingControl = null;
+
+        // Destination (fixed for demo)
+        var destination = L.latLng(14.073443, 121.148041);
+
+        // Watch position (updates continuously)
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(function (position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+                var userLocation = L.latLng(userLat, userLng);
+
+                // Update or add user marker
+                if (!userMarker) {
+                    userMarker = L.marker(userLocation).addTo(map)
+                        .bindPopup("You are here").openPopup();
+                } else {
+                    userMarker.setLatLng(userLocation);
+                }
+
+                // Center map on user
+                map.setView(userLocation, 15);
+
+                // Update route dynamically
+                if (routingControl) {
+                    routingControl.setWaypoints([userLocation, destination]);
+                } else {
+                    routingControl = L.Routing.control({
+                        waypoints: [userLocation, destination],
+                        routeWhileDragging: false,
+                        router: L.Routing.osrmv1({
+                            serviceUrl: 'https://router.project-osrm.org/route/v1'
+                        })
+                    }).addTo(map);
+                }
+            }, function (error) {
+                alert("Error getting location: " + error.message);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 0
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    </script> *@
+
+    <script>
+        var map = L.map('map').setView([14.5995, 120.9842], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var userMarker = null;
+        var routingControl = null;
+
+        // Multiple destinations (you can add as many as you like)
+        var destinations = [
+            L.latLng(14.6760, 121.0437),   // Stop 1: Quezon City
+            L.latLng(14.5547, 121.0244),   // Stop 2: Makati
+            L.latLng(14.073443, 121.148041) // Final stop: Laguna
+        ];
+
+        // Watch position (updates continuously)
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(function (position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+                var userLocation = L.latLng(userLat, userLng);
+
+                // Update or add user marker
+                if (!userMarker) {
+                    userMarker = L.marker(userLocation).addTo(map)
+                        .bindPopup("You are here").openPopup();
+                } else {
+                    userMarker.setLatLng(userLocation);
+                }
+
+                // Center map on user
+                map.setView(userLocation, 15);
+
+                // Build full waypoints list: [current location + all destinations]
+                var waypoints = [userLocation].concat(destinations);
+
+                // Update route dynamically
+                if (routingControl) {
+                    routingControl.setWaypoints(waypoints);
+                } else {
+                    routingControl = L.Routing.control({
+                        waypoints: waypoints,
+                        routeWhileDragging: false,
+                        router: L.Routing.osrmv1({
+                            serviceUrl: 'https://router.project-osrm.org/route/v1'
+                        })
+                    }).addTo(map);
+                }
+            }, function (error) {
+                alert("Error getting location: " + error.message);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 0
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
     </script>
 
 
