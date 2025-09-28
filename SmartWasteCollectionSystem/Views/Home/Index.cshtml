@@ -253,193 +253,35 @@ else if (userRole == "Home Owner")
 }
 else if (userRole == "Garbage Collector")
 {
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <div class="container my-4">
+        <div class="row g-4">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center h-100 ratio ratio-1x1">
+                    <div class="ratio ratio-1x1">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center bg-success text-white rounded-3">
+                            <i class="fa-solid fa-clock fa-3x mb-2"></i>
+                            <div class="fw-bold">Collection Schedule</div>
+                            <div class="mt-2 text-light small">@(Model.CollectionSchedule != null ? Model.CollectionSchedule.CollectionTime.ToString("hh:mm tt") + " " + Model.CollectionSchedule.DayOfWeek.Day + " " + Model.CollectionSchedule.FrequencyType.FrequencyName : "No Schedule set")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-    <div id="map" style="height: 600px;"></div>
-    @* <script>
-        // Initialize map
-        var map = L.map('map').setView([14.5995, 120.9842], 13); // Example: Manila
-
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Add routing control (using free OSRM demo server)
-        L.Routing.control({
-            waypoints: [
-                L.latLng(14.069444, 121.143039), // Start
-                L.latLng(14.073443, 121.148041)  // End
-            ],
-            routeWhileDragging: true,
-            router: L.Routing.osrmv1({
-                serviceUrl: 'https://router.project-osrm.org/route/v1'
-            })
-        }).addTo(map);
-    </script> *@
-    @* using the current location *@
-    @* <script>
-        // Initialize map (default view before location is found)
-        var map = L.map('map').setView([14.5995, 120.9842], 13);
-
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Try to get current location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                var userLat = position.coords.latitude;
-                var userLng = position.coords.longitude;
-
-                // Center the map on user location
-                map.setView([userLat, userLng], 14);
-
-                // Add a marker for current location
-                L.marker([userLat, userLng]).addTo(map)
-                    .bindPopup("You are here")
-                    .openPopup();
-
-                // Add routing from current location to destination
-                L.Routing.control({
-                    waypoints: [
-                        L.latLng(userLat, userLng),           // Start = current location
-                        L.latLng(14.073443, 121.148041)      // End = destination
-                    ],
-                    routeWhileDragging: true,
-                    router: L.Routing.osrmv1({
-                        serviceUrl: 'https://router.project-osrm.org/route/v1'
-                    })
-                }).addTo(map);
-
-            }, function (error) {
-                alert("Unable to retrieve your location: " + error.message);
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        } 
-    </script>*@
-
-    @* <script>
-        var map = L.map('map').setView([14.5995, 120.9842], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        var userMarker = null;
-        var routingControl = null;
-
-        // Destination (fixed for demo)
-        var destination = L.latLng(14.073443, 121.148041);
-
-        // Watch position (updates continuously)
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(function (position) {
-                var userLat = position.coords.latitude;
-                var userLng = position.coords.longitude;
-                var userLocation = L.latLng(userLat, userLng);
-
-                // Update or add user marker
-                if (!userMarker) {
-                    userMarker = L.marker(userLocation).addTo(map)
-                        .bindPopup("You are here").openPopup();
-                } else {
-                    userMarker.setLatLng(userLocation);
-                }
-
-                // Center map on user
-                map.setView(userLocation, 15);
-
-                // Update route dynamically
-                if (routingControl) {
-                    routingControl.setWaypoints([userLocation, destination]);
-                } else {
-                    routingControl = L.Routing.control({
-                        waypoints: [userLocation, destination],
-                        routeWhileDragging: false,
-                        router: L.Routing.osrmv1({
-                            serviceUrl: 'https://router.project-osrm.org/route/v1'
-                        })
-                    }).addTo(map);
-                }
-            }, function (error) {
-                alert("Error getting location: " + error.message);
-            }, {
-                enableHighAccuracy: true,
-                maximumAge: 0
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    </script> *@
-
-    <script>
-        var map = L.map('map').setView([14.5995, 120.9842], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        var userMarker = null;
-        var routingControl = null;
-
-        // Multiple destinations (you can add as many as you like)
-        var destinations = [
-            L.latLng(14.6760, 121.0437),   // Stop 1: Quezon City
-            L.latLng(14.5547, 121.0244),   // Stop 2: Makati
-            L.latLng(14.073443, 121.148041) // Final stop: Laguna
-        ];
-
-        // Watch position (updates continuously)
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(function (position) {
-                var userLat = position.coords.latitude;
-                var userLng = position.coords.longitude;
-                var userLocation = L.latLng(userLat, userLng);
-
-                // Update or add user marker
-                if (!userMarker) {
-                    userMarker = L.marker(userLocation).addTo(map)
-                        .bindPopup("You are here").openPopup();
-                } else {
-                    userMarker.setLatLng(userLocation);
-                }
-
-                // Center map on user
-                map.setView(userLocation, 15);
-
-                // Build full waypoints list: [current location + all destinations]
-                var waypoints = [userLocation].concat(destinations);
-
-                // Update route dynamically
-                if (routingControl) {
-                    routingControl.setWaypoints(waypoints);
-                } else {
-                    routingControl = L.Routing.control({
-                        waypoints: waypoints,
-                        routeWhileDragging: false,
-                        router: L.Routing.osrmv1({
-                            serviceUrl: 'https://router.project-osrm.org/route/v1'
-                        })
-                    }).addTo(map);
-                }
-            }, function (error) {
-                alert("Error getting location: " + error.message);
-            }, {
-                enableHighAccuracy: true,
-                maximumAge: 0
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    </script>
-
-
+            <div class="col-6 col-md-3 mb-3">
+                <a href="HomeOwner/Announcements">
+                    <div class="card shadow-sm border-0 rounded-3 text-center h-100 ratio ratio-1x1">
+                        <div class="ratio ratio-1x1">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center bg-success text-white rounded-3">
+                                <i class="fa-solid fa-bullhorn fa-3x mb-2"></i>
+                                <div class="fw-bold">Announcements</div>
+                                <div class="mt-2 text-light small">@Model.NumberOfAnnouncement new updates</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 }
 
 

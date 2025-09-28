@@ -67,6 +67,12 @@
                                     <a class="nav-link text-light" asp-area="" asp-controller="BinLog" asp-action="BinLogListScreen"><i class="fa-regular fa-trash-can"></i> Bin Logs</a>
                                 </li>
                             }
+                            @if (roles == "Garbage Collector")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-area="" asp-controller="GarbageCollector" asp-action="RouteMapping"><i class="fa-solid fa-location-dot"></i> Route Mapping</a>
+                                </li>
+                            }
                         </ul>
                         <ul class="nav">
                             <li class="nav-item"><a href="/User/UserEdit?UserId=@User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value" class="nav-link link-body-emphasis px-2 text-light">@(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value)</a></li>

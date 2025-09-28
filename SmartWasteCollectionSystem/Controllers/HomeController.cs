@@ -19,7 +19,7 @@ namespace SmartWasteCollectionSystem.Controllers
         private readonly IBaseRepository<Announcement> _annnouncement;
 
         public HomeController(
-            ILogger<HomeController> logger, 
+            ILogger<HomeController> logger,
             SwcsdbContext context,
             IBaseRepository<GarbageCollectionSchedule> schedule,
             IBaseRepository<User> user,
@@ -49,7 +49,7 @@ namespace SmartWasteCollectionSystem.Controllers
             var dashboardData = new DashboardModel();
 
             if (userRole == "Admin") {
-                
+
                 dashboardData.GarbageCollectionSchedules = _schedule.GetByConditionAndIncludes(g =>
                     g.IsActive == true,
                     "DayOfWeek",
@@ -60,6 +60,22 @@ namespace SmartWasteCollectionSystem.Controllers
                     u.CreatedDate.Year == localTime.Year &&
                     u.CreatedDate.Month == localTime.Month
                 ).ToList();
+            }
+            else if (userRole == "Home Owner" || userRole == "Garbage Collector")
+            {
+                dashboardData.CollectionSchedule = _garbage.GetByConditionAndIncludes(g =>
+                    g.IsActive == true
+                    && g.EffectiveFrom <= DateOnly.FromDateTime(localTime)
+                    && g.EffectiveTo >= DateOnly.FromDateTime(localTime),
+                    "DayOfWeek",
+                    "FrequencyType"
+                ).OrderBy(g => g.DayOfWeek.DayOfWeekId).FirstOrDefault();
+
+                dashboardData.NumberOfAnnouncement = _annnouncement.GetByCondition(a =>
+                    a.IsActive == true
+                    && a.StartDate <= DateOnly.FromDateTime(localTime)
+                    && a.EndDate >= DateOnly.FromDateTime(localTime)
+                ).Count();
             }
             else if (userRole == "Home Owner")
             {
@@ -73,20 +89,6 @@ namespace SmartWasteCollectionSystem.Controllers
                     d.DueDate.Year == localTime.Year &&
                     !d.IsPaid
                 ).FirstOrDefault() ?? new MonthlyDue();
-
-                dashboardData.CollectionSchedule = _garbage.GetByConditionAndIncludes(g =>
-                    g.IsActive == true
-                    && g.EffectiveFrom <= DateOnly.FromDateTime(localTime)
-                    && g.EffectiveTo >= DateOnly.FromDateTime(localTime),
-                    "DayOfWeek",
-                    "FrequencyType"
-                ).OrderBy(g => g.DayOfWeek.DayOfWeekId).FirstOrDefault();
-                
-                dashboardData.NumberOfAnnouncement = _annnouncement.GetByCondition(a => 
-                    a.IsActive == true
-                    && a.StartDate <= DateOnly.FromDateTime(localTime)
-                    && a.EndDate >= DateOnly.FromDateTime(localTime)
-                ).Count();
             }
             return View(dashboardData);
         }
