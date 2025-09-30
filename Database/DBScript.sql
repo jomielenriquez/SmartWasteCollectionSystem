@@ -1,4 +1,3 @@
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -17,7 +16,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[BinLog]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[BinLog]    Script Date: 30/09/2025 11:12:58 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -27,13 +26,14 @@ CREATE TABLE [dbo].[BinLog](
 	[UserID] [uniqueidentifier] NOT NULL,
 	[BinStatusPercentage] [int] NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
+	[MQ3Reading] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[BinLogID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DayOfWeek]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[DayOfWeek]    Script Date: 30/09/2025 11:12:58 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -47,7 +47,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Emails]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[Emails]    Script Date: 30/09/2025 11:12:58 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -66,7 +66,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[FrequencyType]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[FrequencyType]    Script Date: 30/09/2025 11:12:58 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -80,7 +80,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[GarbageCollectionSchedule]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[GarbageCollectionSchedule]    Script Date: 30/09/2025 11:12:58 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -101,7 +101,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MonthlyDues]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[MonthlyDues]    Script Date: 30/09/2025 11:12:58 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -122,7 +122,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserRole]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[UserRole]    Script Date: 30/09/2025 11:12:59 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -137,7 +137,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 24/09/2025 7:20:39 pm ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 30/09/2025 11:12:59 pm ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -166,15 +166,15 @@ PRIMARY KEY CLUSTERED
 GO
 INSERT [dbo].[Announcements] ([AnnouncementId], [Title], [Message], [StartDate], [EndDate], [IsActive], [CreatedDate]) VALUES (N'683ac587-efdd-4438-b039-3e03f851187a', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', CAST(N'2025-09-21' AS Date), CAST(N'2025-09-30' AS Date), 1, CAST(N'2025-09-21T22:40:36.663' AS DateTime))
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'4d55ba74-3e1a-4684-9129-002cf85eedfe', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 1, CAST(N'2025-09-22T21:27:38.680' AS DateTime))
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'4d55ba74-3e1a-4684-9129-002cf85eedfe', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 1, CAST(N'2025-09-22T21:27:38.680' AS DateTime), NULL)
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'd7756ba4-1091-4323-b645-bf796d1dcc46', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 10, CAST(N'2025-09-22T21:28:01.593' AS DateTime))
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'd7756ba4-1091-4323-b645-bf796d1dcc46', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 10, CAST(N'2025-09-22T21:28:01.593' AS DateTime), NULL)
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'5494afb9-7d4b-4754-b9be-d6131f99c28c', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 20, CAST(N'2025-09-23T20:48:28.960' AS DateTime))
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'5494afb9-7d4b-4754-b9be-d6131f99c28c', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 20, CAST(N'2025-09-23T20:48:28.960' AS DateTime), NULL)
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'84a6d253-e973-49aa-b5d7-e84f25fe8849', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 11, CAST(N'2025-09-23T19:47:25.723' AS DateTime))
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'84a6d253-e973-49aa-b5d7-e84f25fe8849', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 11, CAST(N'2025-09-23T19:47:25.723' AS DateTime), NULL)
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate]) VALUES (N'e8a99e67-69e6-42b2-bace-fe2fb16e2cf9', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 12, CAST(N'2025-09-23T19:49:53.687' AS DateTime))
+INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'e8a99e67-69e6-42b2-bace-fe2fb16e2cf9', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 12, CAST(N'2025-09-23T19:49:53.687' AS DateTime), NULL)
 GO
 INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'0d52c731-5f63-4246-abd2-264264f83945', N'Tuesday')
 GO
@@ -218,7 +218,7 @@ INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumb
 GO
 INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'396ff8e2-349d-49ff-b9ac-27e67b5bbc06', N'Jomiel', N'Enriquez', N'2', N'6', NULL, N'+639953637231', CAST(N'2025-09-16T00:00:00.000' AS DateTime), N'enriquez.jliquigan@gmail.com', N'21232F297A57A5A743894A0E4A801FC3', CAST(N'2025-09-16T22:05:27.060' AS DateTime), N'c61e32ce-7775-491e-9859-3780f5dcdba5', CAST(14.073443 AS Decimal(9, 6)), CAST(121.148041 AS Decimal(9, 6)), NULL)
 GO
-INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', N'Juan', N'Dela Cruz', N'7', N'7', N'Test', N'+631231231231', CAST(N'2025-09-22T00:00:00.000' AS DateTime), N'jom72056@gmail.com', N'21232F297A57A5A743894A0E4A801FC3', CAST(N'2025-09-22T19:58:18.407' AS DateTime), N'2c21d99f-dec7-4876-8614-db8a6b1b1f38', CAST(14.068488 AS Decimal(9, 6)), CAST(121.149793 AS Decimal(9, 6)), N'b2f90dfa-0b3b-47b6-9f1a-4d974fad78d0')
+INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', N'Juan', N'Dela Cruz', N'7', N'7', N'Test', N'+631231231231', CAST(N'2025-09-22T00:00:00.000' AS DateTime), N'jom72056@gmail.com', N'21232F297A57A5A743894A0E4A801FC3', CAST(N'2025-09-22T19:58:18.407' AS DateTime), N'f9b59208-5e27-4f5f-82b2-f4fdf744df13', CAST(14.068488 AS Decimal(9, 6)), CAST(121.149793 AS Decimal(9, 6)), N'b2f90dfa-0b3b-47b6-9f1a-4d974fad78d0')
 GO
 INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'96f0b7e6-3639-4890-b0f3-a04a1587edc6', N'System', N'Admin', N'0', N'0', NULL, N'+631231231231', CAST(N'2025-09-18T00:00:00.000' AS DateTime), N'smartbin422@gmail.com', N'21232F297A57A5A743894A0E4A801FC3', CAST(N'2025-09-18T22:33:16.390' AS DateTime), N'c61e32ce-7775-491e-9859-3780f5dcdba5', CAST(14.069444 AS Decimal(9, 6)), CAST(121.143039 AS Decimal(9, 6)), NULL)
 GO
@@ -233,6 +233,8 @@ GO
 ALTER TABLE [dbo].[BinLog] ADD  DEFAULT ((0)) FOR [BinStatusPercentage]
 GO
 ALTER TABLE [dbo].[BinLog] ADD  DEFAULT (getdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [dbo].[BinLog] ADD  DEFAULT ((0)) FOR [MQ3Reading]
 GO
 ALTER TABLE [dbo].[DayOfWeek] ADD  DEFAULT (newid()) FOR [DayOfWeekID]
 GO
@@ -289,4 +291,3 @@ REFERENCES [dbo].[UserRole] ([UserRoleID])
 GO
 ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_UserRoleID]
 GO
-
