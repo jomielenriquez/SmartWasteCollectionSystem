@@ -39,11 +39,13 @@ float distanceInch;
 #define PIR_PIN 27   // GPIO pin where PIR OUT is connected
 // int motionCount = 0;
 bool isBinOpen = false;
+bool isBinOpenLogged = true;
 float binOpenTravelCounter = 0;
 float binOpenTravelCounterLimit = 7; // 7 sec travel limit
 float binOpenCounter = 0;
 float binOpenCounterLimit = 6; // 6 sec bin will be open
 float loopDelay = 0.5;
+float binHeight = 30.0;
 
 // Relay Module
 #define RELAY1_PIN 26
@@ -51,6 +53,50 @@ float loopDelay = 0.5;
 
 // MQ3
 #define MQ3_PIN 34
+
+int readMQ3(){
+  int sensorValue = analogRead(MQ3_PIN); // 0 - 4095 on ESP32
+  float voltage = sensorValue * (3.3 / 4095.0);
+
+  Serial.print("ADC: ");
+  Serial.print(sensorValue);
+  Serial.print(" | Voltage: ");
+  Serial.print(voltage);
+  
+  if (sensorValue < 1000) {
+    Serial.println(" -> Air is clean ✅");
+  } else if (sensorValue < 2000) {
+    Serial.println(" -> Mild odor ⚠️");
+  } else {
+    Serial.println(" -> Strong foul odor ❌");
+  }
+  return sensorValue;
+}
+
+float readUltraSonic(){
+  // Ultrasonic start with 5 sec delay
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculate the distance
+  distanceCm = duration * SOUND_SPEED/2;
+  distanceInch = distanceCm * CM_TO_INCH;
+
+  // Prevent negative values
+  if (distanceInch > binHeight) distanceInch = binHeight;
+  if (distanceInch < 0) distanceInch = 0;
+
+  // Compute percentage
+  float fillPercent = ((binHeight - distanceInch) / binHeight) * 100.0;
+
+  return fillPercent;
+}
 
 String PageHeader(String title){
   String html = R"rawliteral(
@@ -155,8 +201,6 @@ void handlePostPage() {
   String page = PageHeader("Send Bin Status");
   if (SaveApiMessage != "") {page += "<div class='status'>" + SaveApiMessage + "</div>";}
   page += "<form action='/sendpost' method='POST'>";
-  page += "<label for='apiKey'>API Key:</label><input type='text' name='apiKey' id='apiKey' value='" + apiKey + "'>";
-  page += "<label for='percentage'>Percentage:</label><input type='text' name='percentage' id='percentage'>";
   page += "<button type='submit' class='btn-primary'>Send</button></form>";
   page += pageFooter();
   SaveApiMessage = "";
@@ -164,8 +208,14 @@ void handlePostPage() {
 }
 
 void handleSendPost() {
-  apiKey = server.arg("apiKey");
-  String perc = server.arg("percentage");
+  if(apiKey == ""){
+    preferences.begin("wifi", true);
+    apiKey = preferences.getString("apiKey", "");
+    preferences.end();
+  }
+
+  String perc = String(readUltraSonic(), 0);
+  int mq3 = readMQ3();
 
   if (apiKey == "" || perc == "") {
     server.send(200, "text/html", "API Key or Percentage missing!");
@@ -181,7 +231,7 @@ void handleSendPost() {
     http.begin("https://ecokonek.somee.com/BinLog/UpdateBinStatus");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    String payload = "apiKey=" + apiKey + "&percentage=" + perc;
+    String payload = "apiKey=" + apiKey + "&percentage=" + perc + "&mq3=" + mq3;
     int httpCode = http.POST(payload);
 
     if (httpCode > 0) {
@@ -230,6 +280,7 @@ void handleBinSettingsPage() {
   page += "<form action='/saveBinSettings' method='POST'>";
   page += "<label for='binOpenTravelCounterLimit'>Bin Open Travel Counter Limit:</label><input type='text' name='binOpenTravelCounterLimit' id='binOpenTravelCounterLimit' value='" + String(binOpenTravelCounterLimit, 1) + "'>";
   page += "<label for='binOpenCounterLimit'>Bin Open Counter Limit:</label><input type='text' name='binOpenCounterLimit' id='binOpenCounterLimit' value='" + String(binOpenCounterLimit, 1) + "'>";
+  page += "<label for='binHeight'>Bin Height:</label><input type='text' name='binHeight' id='binHeight' value='" + String(binHeight, 1) + "'>";
   page += "<button type='submit' class='btn-primary'>Save</button></form>";
   page += pageFooter();
   SaveBinSettingsMessage = "";
@@ -239,31 +290,15 @@ void handleBinSettingsPage() {
 void handleSaveBinSettings() {
   binOpenTravelCounterLimit = server.arg("binOpenTravelCounterLimit").toFloat();
   binOpenCounterLimit = server.arg("binOpenCounterLimit").toFloat();
+  binHeight = server.arg("binHeight").toFloat();
   
   preferences.begin("wifi", false);
   preferences.putFloat("binOpenTravelCounterLimit", binOpenTravelCounterLimit);
   preferences.putFloat("binOpenCounterLimit", binOpenCounterLimit);
+  preferences.putFloat("binHeight", binHeight);
   preferences.end();
   SaveBinSettingsMessage = "Bin Settings saved!";
   handleBinSettingsPage();
-}
-
-float readUltraSonic(){
-  // Ultrasonic start with 5 sec delay
-  // Clears the trigPin
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-  // Calculate the distance
-  distanceCm = duration * SOUND_SPEED/2;
-  // Convert to inches
-  distanceInch = distanceCm * CM_TO_INCH;
-  return distanceCm;
 }
 // // put function declarations here:
 // int myFunction(int, int);
@@ -283,25 +318,6 @@ void standbyBin(){
   digitalWrite(RELAY2_PIN, LOW);
 }
 
-int readMQ3(){
-  int sensorValue = analogRead(MQ3_PIN); // 0 - 4095 on ESP32
-  float voltage = sensorValue * (3.3 / 4095.0);
-
-  Serial.print("ADC: ");
-  Serial.print(sensorValue);
-  Serial.print(" | Voltage: ");
-  Serial.print(voltage);
-  
-  if (sensorValue < 1000) {
-    Serial.println(" -> Air is clean ✅");
-  } else if (sensorValue < 2000) {
-    Serial.println(" -> Mild odor ⚠️");
-  } else {
-    Serial.println(" -> Strong foul odor ❌");
-  }
-  return sensorValue;
-}
-
 void setup() {
   Serial.begin(115200);
 
@@ -316,6 +332,7 @@ void setup() {
   String savedPASS = preferences.getString("pass", "");
   binOpenTravelCounterLimit = preferences.getFloat("binOpenTravelCounterLimit", 7);
   binOpenCounterLimit = preferences.getFloat("binOpenCounterLimit", 6);
+  binHeight = preferences.getFloat("binHeight", 6);
   apiKey = preferences.getString("apiKey", "");
   Serial.print("API Key: "); Serial.println(apiKey);
   preferences.end();
@@ -378,16 +395,18 @@ void loop() {
 
   int motion = digitalRead(PIR_PIN);
 
-  int mq3Reading = readMQ3();
-
   Serial.print("binOpenTravelCounter: "); Serial.println(binOpenTravelCounter);
   Serial.print("binOpenCounter: "); Serial.println(binOpenCounter);
 
   if (motion == HIGH) {
+    int mq3Reading = readMQ3();
+
     Serial.println(" Motion Detected!");
-    Serial.println("OPEN BIN");
-    if (!isBinOpen){
+    if (!isBinOpen && mq3Reading < 2000){
       isBinOpen = true;
+    }
+    else{
+      handleSendPost();
     }
   } 
   else if (binOpenCounter >= binOpenCounterLimit) {
@@ -411,6 +430,11 @@ void loop() {
     closeBin();
     if (binOpenTravelCounter > 0){
       binOpenTravelCounter -= loopDelay;
+      isBinOpenLogged = false;
+    }
+    else if(binOpenTravelCounter <=0 && !isBinOpenLogged){
+      isBinOpenLogged = true;
+      handleSendPost();
     }
   }
   delay((loopDelay * 1000));
