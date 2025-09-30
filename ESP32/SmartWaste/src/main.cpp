@@ -17,6 +17,7 @@ WebServer server(80);
 bool isConnected = false;
 String SaveApiMessage = "";
 String SaveApiKeyMessage = "";
+String SaveBinSettingsMessage = "";
 String connectedSSID = "";
 String wifiList = "";
 String apiKey = "";
@@ -32,7 +33,13 @@ float distanceInch;
 
 // Motion Sensor
 #define PIR_PIN 27   // GPIO pin where PIR OUT is connected
-int motionCount = 0;
+// int motionCount = 0;
+bool isBinOpen = false;
+float binOpenTravelCounter = 0;
+float binOpenTravelCounterLimit = 7; // 7 sec travel limit
+float binOpenCounter = 0;
+float binOpenCounterLimit = 6; // 6 sec bin will be open
+float loopDelay = 0.5;
 
 #define RELAY1_PIN 26
 #define RELAY2_PIN 25
@@ -85,6 +92,11 @@ String buildPage() {
     page += R"rawliteral(
       <form action="/apikey" method="GET">
         <button type="submit" class="btn-primary">Set API Key</button>
+      </form>
+    )rawliteral";
+    page += R"rawliteral(
+      <form action="/binSettings" method="GET">
+        <button type="submit" class="btn-primary">Bin Settings</button>
       </form>
     )rawliteral";
   } else {
@@ -204,6 +216,30 @@ void handleSaveApiKey() {
   }
 }
 
+void handleBinSettingsPage() {
+  String page = PageHeader("Bin Settings Page");
+  if (SaveBinSettingsMessage != "") {page += "<div class='status'>" + SaveBinSettingsMessage + "</div>";}
+  page += "<form action='/saveBinSettings' method='POST'>";
+  page += "<label for='binOpenTravelCounterLimit'>Bin Open Travel Counter Limit:</label><input type='text' name='binOpenTravelCounterLimit' id='binOpenTravelCounterLimit' value='" + String(binOpenTravelCounterLimit, 1) + "'>";
+  page += "<label for='binOpenCounterLimit'>Bin Open Counter Limit:</label><input type='text' name='binOpenCounterLimit' id='binOpenCounterLimit' value='" + String(binOpenCounterLimit, 1) + "'>";
+  page += "<button type='submit' class='btn-primary'>Save</button></form>";
+  page += pageFooter();
+  SaveBinSettingsMessage = "";
+  server.send(200, "text/html", page);
+}
+
+void handleSaveBinSettings() {
+  binOpenTravelCounterLimit = server.arg("binOpenTravelCounterLimit").toFloat();
+  binOpenCounterLimit = server.arg("binOpenCounterLimit").toFloat();
+  
+  preferences.begin("wifi", false);
+  preferences.putFloat("binOpenTravelCounterLimit", binOpenTravelCounterLimit);
+  preferences.putFloat("binOpenCounterLimit", binOpenCounterLimit);
+  preferences.end();
+  SaveBinSettingsMessage = "Bin Settings saved!";
+  handleBinSettingsPage();
+}
+
 float readUltraSonic(){
   // Ultrasonic start with 5 sec delay
   // Clears the trigPin
@@ -219,11 +255,6 @@ float readUltraSonic(){
   distanceCm = duration * SOUND_SPEED/2;
   // Convert to inches
   distanceInch = distanceCm * CM_TO_INCH;
-  // Prints the distance in the Serial Monitor
-  // Serial.print("Distance (cm): ");
-  // Serial.println(distanceCm);
-  // Serial.print("Distance (inch): ");
-  // Serial.println(distanceInch);
   return distanceCm;
 }
 // // put function declarations here:
@@ -239,6 +270,11 @@ void openBin(){
   digitalWrite(RELAY2_PIN, HIGH);
 }
 
+void standbyBin(){
+  digitalWrite(RELAY1_PIN, LOW);
+  digitalWrite(RELAY2_PIN, LOW);
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -251,6 +287,8 @@ void setup() {
   preferences.begin("wifi", true);
   String savedSSID = preferences.getString("ssid", "");
   String savedPASS = preferences.getString("pass", "");
+  binOpenTravelCounterLimit = preferences.getFloat("binOpenTravelCounterLimit", 7);
+  binOpenCounterLimit = preferences.getFloat("binOpenCounterLimit", 6);
   apiKey = preferences.getString("apiKey", "");
   Serial.print("API Key: "); Serial.println(apiKey);
   preferences.end();
@@ -282,6 +320,8 @@ void setup() {
   server.on("/sendpost", HTTP_POST, handleSendPost);
   server.on("/apikey", handleApiKeyPage);
   server.on("/saveApiKey", HTTP_POST, handleSaveApiKey);
+  server.on("/binSettings", handleBinSettingsPage);
+  server.on("/saveBinSettings", HTTP_POST, handleSaveBinSettings);
   server.begin();
 
   //UltraSonic
@@ -309,28 +349,44 @@ void loop() {
     Serial.println("STA IP: " + WiFi.localIP().toString());
   }
 
-  //Serial.print("Distance (inch): "); Serial.println(readUltraSonic());
-
   int motion = digitalRead(PIR_PIN);
-  float distance = readUltraSonic();
-  Serial.print("Distance (inch): "); Serial.print(distance);
+  // float distance = readUltraSonic();
+  // Serial.print("Distance (inch): "); Serial.print(distance);
+
+  Serial.print("binOpenTravelCounter: "); Serial.println(binOpenTravelCounter);
+  Serial.print("binOpenCounter: "); Serial.println(binOpenCounter);
 
   if (motion == HIGH) {
     Serial.println(" Motion Detected!");
-    motionCount++;
-    if (motionCount > 3 && distance <= 50){
-      Serial.println("OPEN BIN");
-      openBin();
-      //delay(30000);
+    Serial.println("OPEN BIN");
+    if (!isBinOpen){
+      isBinOpen = true;
     }
   } 
-  else if (distance > 50) {
+  else if (binOpenCounter >= binOpenCounterLimit) {
     Serial.println("No Motion");
-    motionCount = 0;
-    closeBin();
+    isBinOpen = false;
+    binOpenCounter = 0;
   }
-  
-  delay(500);
+
+  if (isBinOpen && binOpenTravelCounter < binOpenTravelCounterLimit){
+    Serial.println("openBin");
+    openBin();
+    binOpenTravelCounter += loopDelay;
+  }
+  else if (isBinOpen && binOpenTravelCounter >= binOpenTravelCounterLimit){
+    Serial.println("standbyBin");
+    standbyBin();
+    binOpenCounter += loopDelay;
+  }
+  else if (!isBinOpen){
+    Serial.println("closeBin");
+    closeBin();
+    if (binOpenTravelCounter > 0){
+      binOpenTravelCounter -= loopDelay;
+    }
+  }
+  delay((loopDelay * 1000));
 }
 
 // // put function definitions here:
