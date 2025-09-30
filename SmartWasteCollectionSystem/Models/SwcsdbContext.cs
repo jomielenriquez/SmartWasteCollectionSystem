@@ -33,15 +33,11 @@ public partial class SwcsdbContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=LAPTOP-8QU1FPT9\\SQLEXPRESS;Database=SWCSDB;Trusted_Connection=True;TrustServerCertificate=True;");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Announcement>(entity =>
         {
-            entity.HasKey(e => e.AnnouncementId).HasName("PK__Announce__9DE44574D64ADA81");
+            entity.HasKey(e => e.AnnouncementId);//.HasName("PK__Announce__9DE44574D64ADA81");
 
             entity.Property(e => e.AnnouncementId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedDate)
@@ -53,7 +49,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<BinLog>(entity =>
         {
-            entity.HasKey(e => e.BinLogId).HasName("PK__BinLog__C9FCFC36C50C7C44");
+            entity.HasKey(e => e.BinLogId);//.HasName("PK__BinLog__C9FCFC36C50C7C44");
 
             entity.ToTable("BinLog");
 
@@ -76,7 +72,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<DayOfWeek>(entity =>
         {
-            entity.HasKey(e => e.DayOfWeekId).HasName("PK__DayOfWee__01AA8DDFF2F0D8FA");
+            entity.HasKey(e => e.DayOfWeekId);//.HasName("PK__DayOfWee__01AA8DDFF2F0D8FA");
 
             entity.ToTable("DayOfWeek");
 
@@ -88,7 +84,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<Email>(entity =>
         {
-            entity.HasKey(e => e.EmailId).HasName("PK__Emails__7ED91ACF5C6D758F");
+            entity.HasKey(e => e.EmailId);//.HasName("PK__Emails__7ED91ACF5C6D758F");
 
             entity.Property(e => e.EmailId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedDate)
@@ -100,7 +96,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<FrequencyType>(entity =>
         {
-            entity.HasKey(e => e.FrequencyTypeId).HasName("PK__Frequenc__829BB4DCD8D30891");
+            entity.HasKey(e => e.FrequencyTypeId);//.HasName("PK__Frequenc__829BB4DCD8D30891");
 
             entity.ToTable("FrequencyType");
 
@@ -112,7 +108,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<GarbageCollectionSchedule>(entity =>
         {
-            entity.HasKey(e => e.GarbageCollectionScheduleId).HasName("PK__GarbageC__CF2C7CEF0240A813");
+            entity.HasKey(e => e.GarbageCollectionScheduleId);//.HasName("PK__GarbageC__CF2C7CEF0240A813");
 
             entity.ToTable("GarbageCollectionSchedule");
 
@@ -138,7 +134,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<MonthlyDue>(entity =>
         {
-            entity.HasKey(e => e.MonthlyDueId).HasName("PK__MonthlyD__F025985FB8301311");
+            entity.HasKey(e => e.MonthlyDueId);//.HasName("PK__MonthlyD__F025985FB8301311");
 
             entity.Property(e => e.MonthlyDueId)
                 .HasDefaultValueSql("(newid())")
@@ -165,7 +161,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACE57243DF");
+            entity.HasKey(e => e.UserId);//.HasName("PK__Users__1788CCACE57243DF");
 
             entity.Property(e => e.UserId)
                 .HasDefaultValueSql("(newid())")
@@ -194,7 +190,7 @@ public partial class SwcsdbContext : DbContext
 
         modelBuilder.Entity<UserRole>(entity =>
         {
-            entity.HasKey(e => e.UserRoleId).HasName("PK__UserRole__3D978A552FCAB013");
+            entity.HasKey(e => e.UserRoleId);//.HasName("PK__UserRole__3D978A552FCAB013");
 
             entity.ToTable("UserRole");
 
