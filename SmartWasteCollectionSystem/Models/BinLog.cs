@@ -13,5 +13,7 @@ public partial class BinLog
 
     public DateTime CreatedDate { get; set; }
 
+    public int? Mq3reading { get; set; }
+
     public virtual User User { get; set; } = null!;
 }
