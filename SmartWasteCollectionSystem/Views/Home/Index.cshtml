@@ -151,6 +151,7 @@ else if (userRole == "Home Owner")
                             <canvas class="mb-2" id="binCircleChart"></canvas>
                             <div class="fw-bold">Bin Fill Level</div>
                             <div class="mt-2 text-light small" id="lastUpdated">Last updated: --</div>
+                            <div class="mt-2 text-light small" id="mq3Reading"><i class="fa-solid fa-gauge"></i> <b>Air Quality</b></div>
                         </div>
                     </div>
                 </div>
@@ -236,6 +237,13 @@ else if (userRole == "Home Owner")
                     const updated = new Date(data.createdDate);
                     document.getElementById('lastUpdated').innerText =
                         "Last updated: " + updated.toLocaleString();
+                    console.log(data);
+                    document.getElementById('mq3Reading').innerText =
+                        data.mq3reading < 1000 
+                            ? "Air is clean ✅" 
+                            : data.mq3reading < 2000
+                                ? "Mild odor ⚠️"
+                                : "Strong foul odor ❌";
                 })
                 .catch(err => {
                     console.error('Error fetching bin status:', err);

@@ -67,7 +67,7 @@ namespace SmartWasteCollectionSystem.Controllers
         }
 
         [HttpPost, ActionName("UpdateBinStatus")]
-        public ActionResult Save(string apiKey, int percentage)
+        public ActionResult Save(string apiKey, int percentage, int mq3)
         {
             var user = _user.GetByCondition(u => u.HomeOwnerApikey == new Guid(apiKey)).FirstOrDefault();
             if (user == null) {
@@ -78,7 +78,8 @@ namespace SmartWasteCollectionSystem.Controllers
                 var binLog = new BinLog()
                 {
                     UserId = user.UserId,
-                    BinStatusPercentage = percentage
+                    BinStatusPercentage = percentage,
+                    Mq3reading = mq3
                 };
                 var result = _binRepository.SaveBinLog(binLog);
                 if (result.IsSuccess)
@@ -100,7 +101,8 @@ namespace SmartWasteCollectionSystem.Controllers
             ).OrderByDescending(b => b.CreatedDate).Select(b => new 
             {
                 b.BinStatusPercentage,
-                b.CreatedDate
+                b.CreatedDate,
+                b.Mq3reading
             }).FirstOrDefault();
 
             return Ok(bin);
