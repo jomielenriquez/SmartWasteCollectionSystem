@@ -1,5 +1,9 @@
 // References
 // Ultrasonic with esp32 : https://randomnerdtutorials.com/esp32-hc-sr04-ultrasonic-arduino/
+// motion sensor: https://projecthub.arduino.cc/electronicsfan123/interfacing-arduino-uno-with-pir-motion-sensor-593b6b
+// ESP32 Tutorial: https://randomnerdtutorials.com/getting-started-with-esp32/
+// ESP32 Pinouts: https://lastminuteengineers.com/esp32-pinout-reference/
+// 
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -41,8 +45,12 @@ float binOpenCounter = 0;
 float binOpenCounterLimit = 6; // 6 sec bin will be open
 float loopDelay = 0.5;
 
+// Relay Module
 #define RELAY1_PIN 26
 #define RELAY2_PIN 25
+
+// MQ3
+#define MQ3_PIN 34
 
 String PageHeader(String title){
   String html = R"rawliteral(
@@ -275,6 +283,25 @@ void standbyBin(){
   digitalWrite(RELAY2_PIN, LOW);
 }
 
+int readMQ3(){
+  int sensorValue = analogRead(MQ3_PIN); // 0 - 4095 on ESP32
+  float voltage = sensorValue * (3.3 / 4095.0);
+
+  Serial.print("ADC: ");
+  Serial.print(sensorValue);
+  Serial.print(" | Voltage: ");
+  Serial.print(voltage);
+  
+  if (sensorValue < 1000) {
+    Serial.println(" -> Air is clean ✅");
+  } else if (sensorValue < 2000) {
+    Serial.println(" -> Mild odor ⚠️");
+  } else {
+    Serial.println(" -> Strong foul odor ❌");
+  }
+  return sensorValue;
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -350,8 +377,8 @@ void loop() {
   }
 
   int motion = digitalRead(PIR_PIN);
-  // float distance = readUltraSonic();
-  // Serial.print("Distance (inch): "); Serial.print(distance);
+
+  int mq3Reading = readMQ3();
 
   Serial.print("binOpenTravelCounter: "); Serial.println(binOpenTravelCounter);
   Serial.print("binOpenCounter: "); Serial.println(binOpenCounter);
