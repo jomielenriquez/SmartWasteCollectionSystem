@@ -55,7 +55,13 @@ float binHeight = 30.0;
 #define MQ3_PIN 34
 
 int readMQ3(){
-  int sensorValue = analogRead(MQ3_PIN); // 0 - 4095 on ESP32
+  int samples = 10;
+  long sum = 0;
+  for (int i = 0; i < samples; i++) {
+    sum += analogRead(MQ3_PIN); // 0 - 4095 on ESP32
+    delay(10);
+  }
+  int sensorValue = sum / samples;
   float voltage = sensorValue * (3.3 / 4095.0);
 
   Serial.print("ADC: ");
@@ -83,7 +89,7 @@ float readUltraSonic(){
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
+  duration = pulseIn(echoPin, HIGH, 30000);
   // Calculate the distance
   distanceCm = duration * SOUND_SPEED/2;
   distanceInch = distanceCm * CM_TO_INCH;
@@ -207,7 +213,7 @@ void handlePostPage() {
   server.send(200, "text/html", page);
 }
 
-void handleSendPost() {
+void PostSendBinStatus() {
   if(apiKey == ""){
     preferences.begin("wifi", true);
     apiKey = preferences.getString("apiKey", "");
@@ -237,16 +243,18 @@ void handleSendPost() {
     if (httpCode > 0) {
       String response = http.getString();
       SaveApiMessage = "POST Sent!";
-      handlePostPage();
     } else {
       SaveApiMessage = "Error sending POST";
-      handlePostPage();
     }
     http.end();
   } else {
     SaveApiMessage = "Not connected to WiFi!";
-    handlePostPage();
   }
+}
+
+void handleSendPost(){
+  PostSendBinStatus();
+  handlePostPage();
 }
 
 void handleApiKeyPage() {
@@ -293,8 +301,8 @@ void handleSaveBinSettings() {
   binHeight = server.arg("binHeight").toFloat();
   
   preferences.begin("wifi", false);
-  preferences.putFloat("binOpenTravelCounterLimit", binOpenTravelCounterLimit);
-  preferences.putFloat("binOpenCounterLimit", binOpenCounterLimit);
+  preferences.putFloat("binOpening", binOpenTravelCounterLimit);
+  preferences.putFloat("binOpen", binOpenCounterLimit);
   preferences.putFloat("binHeight", binHeight);
   preferences.end();
   SaveBinSettingsMessage = "Bin Settings saved!";
@@ -330,8 +338,8 @@ void setup() {
   preferences.begin("wifi", true);
   String savedSSID = preferences.getString("ssid", "");
   String savedPASS = preferences.getString("pass", "");
-  binOpenTravelCounterLimit = preferences.getFloat("binOpenTravelCounterLimit", 7);
-  binOpenCounterLimit = preferences.getFloat("binOpenCounterLimit", 6);
+  binOpenTravelCounterLimit = preferences.getFloat("binOpening", 7);
+  binOpenCounterLimit = preferences.getFloat("binOpen", 6);
   binHeight = preferences.getFloat("binHeight", 6);
   apiKey = preferences.getString("apiKey", "");
   Serial.print("API Key: "); Serial.println(apiKey);
@@ -406,7 +414,7 @@ void loop() {
       isBinOpen = true;
     }
     else{
-      handleSendPost();
+      PostSendBinStatus();
     }
   } 
   else if (binOpenCounter >= binOpenCounterLimit) {
@@ -434,7 +442,7 @@ void loop() {
     }
     else if(binOpenTravelCounter <=0 && !isBinOpenLogged){
       isBinOpenLogged = true;
-      handleSendPost();
+      PostSendBinStatus();
     }
   }
   delay((loopDelay * 1000));
