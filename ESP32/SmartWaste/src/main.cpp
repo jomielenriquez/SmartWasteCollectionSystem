@@ -44,6 +44,7 @@ float binOpenTravelCounter = 0;
 float binOpenTravelCounterLimit = 7; // 7 sec travel limit
 float binOpenCounter = 0;
 float binOpenCounterLimit = 6; // 6 sec bin will be open
+float binLock = 100;
 float loopDelay = 0.5;
 float binHeight = 30.0;
 
@@ -286,9 +287,10 @@ void handleBinSettingsPage() {
   String page = PageHeader("Bin Settings Page");
   if (SaveBinSettingsMessage != "") {page += "<div class='status'>" + SaveBinSettingsMessage + "</div>";}
   page += "<form action='/saveBinSettings' method='POST'>";
-  page += "<label for='binOpenTravelCounterLimit'>Bin Open Travel Counter Limit:</label><input type='text' name='binOpenTravelCounterLimit' id='binOpenTravelCounterLimit' value='" + String(binOpenTravelCounterLimit, 1) + "'>";
-  page += "<label for='binOpenCounterLimit'>Bin Open Counter Limit:</label><input type='text' name='binOpenCounterLimit' id='binOpenCounterLimit' value='" + String(binOpenCounterLimit, 1) + "'>";
-  page += "<label for='binHeight'>Bin Height:</label><input type='text' name='binHeight' id='binHeight' value='" + String(binHeight, 1) + "'>";
+  page += "<label for='binOpenTravelCounterLimit'>Bin Open Travel Counter Limit (sec):</label><input type='text' name='binOpenTravelCounterLimit' id='binOpenTravelCounterLimit' value='" + String(binOpenTravelCounterLimit, 1) + "'>";
+  page += "<label for='binOpenCounterLimit'>Bin Open Counter Limit (sec):</label><input type='text' name='binOpenCounterLimit' id='binOpenCounterLimit' value='" + String(binOpenCounterLimit, 1) + "'>";
+  page += "<label for='binHeight'>Bin Height (m):</label><input type='text' name='binHeight' id='binHeight' value='" + String(binHeight, 1) + "'>";
+  page += "<label for='binLock'>Bin Lock (%):</label><input type='text' name='binLock' id='binLock' value='" + String(binLock, 1) + "'>";
   page += "<button type='submit' class='btn-primary'>Save</button></form>";
   page += pageFooter();
   SaveBinSettingsMessage = "";
@@ -299,11 +301,13 @@ void handleSaveBinSettings() {
   binOpenTravelCounterLimit = server.arg("binOpenTravelCounterLimit").toFloat();
   binOpenCounterLimit = server.arg("binOpenCounterLimit").toFloat();
   binHeight = server.arg("binHeight").toFloat();
+  binLock = server.arg("binLock").toFloat();
   
   preferences.begin("wifi", false);
   preferences.putFloat("binOpening", binOpenTravelCounterLimit);
   preferences.putFloat("binOpen", binOpenCounterLimit);
   preferences.putFloat("binHeight", binHeight);
+  preferences.putFloat("binLock", binLock);
   preferences.end();
   SaveBinSettingsMessage = "Bin Settings saved!";
   handleBinSettingsPage();
@@ -341,6 +345,7 @@ void setup() {
   binOpenTravelCounterLimit = preferences.getFloat("binOpening", 7);
   binOpenCounterLimit = preferences.getFloat("binOpen", 6);
   binHeight = preferences.getFloat("binHeight", 6);
+  binLock = preferences.getFloat("binLock", 100);
   apiKey = preferences.getString("apiKey", "");
   Serial.print("API Key: "); Serial.println(apiKey);
   preferences.end();
@@ -410,7 +415,7 @@ void loop() {
     int mq3Reading = readMQ3();
 
     Serial.println(" Motion Detected!");
-    if (!isBinOpen && mq3Reading < 2000){
+    if (!isBinOpen && mq3Reading < 2000 && readUltraSonic() < binLock){
       isBinOpen = true;
     }
     else{
