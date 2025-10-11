@@ -1,293 +1,173 @@
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Announcements](
-	[AnnouncementId] [uniqueidentifier] NOT NULL,
-	[Title] [nvarchar](200) NOT NULL,
-	[Message] [nvarchar](max) NOT NULL,
-	[StartDate] [date] NOT NULL,
-	[EndDate] [date] NOT NULL,
-	[IsActive] [bit] NOT NULL,
+
+CREATE TABLE [dbo].[Room](
+	[RoomId] [uniqueidentifier] NOT NULL,
+	[RoomName] [nvarchar](100) NOT NULL,
+	[RoomDescription] [nvarchar](max) NOT NULL,
+	[RoomTypeId] [uniqueidentifier] NOT NULL,
+	[RoomCode] [nvarchar](50) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[AnnouncementId] ASC
+	[RoomId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[BinLog]    Script Date: 30/09/2025 11:12:58 pm ******/
+/****** Object:  Table [dbo].[RoomSchedule]    Script Date: 07/10/2025 12:05:53 am ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[BinLog](
-	[BinLogID] [uniqueidentifier] NOT NULL,
-	[UserID] [uniqueidentifier] NOT NULL,
-	[BinStatusPercentage] [int] NOT NULL,
+CREATE TABLE [dbo].[RoomSchedule](
+	[RoomScheduleId] [uniqueidentifier] NOT NULL,
+	[ProfessorUserId] [uniqueidentifier] NOT NULL,
+	[RoomId] [uniqueidentifier] NOT NULL,
+	[DateOfUse] [date] NOT NULL,
+	[StartTime] [time](7) NOT NULL,
+	[EndTime] [time](7) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
-	[MQ3Reading] [int] NULL,
+	[Note] [nvarchar](max) NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[BinLogID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[DayOfWeek]    Script Date: 30/09/2025 11:12:58 pm ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[DayOfWeek](
-	[DayOfWeekID] [uniqueidentifier] NOT NULL,
-	[Day] [nvarchar](50) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[DayOfWeekID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Emails]    Script Date: 30/09/2025 11:12:58 pm ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Emails](
-	[EmailId] [uniqueidentifier] NOT NULL,
-	[Title] [nvarchar](200) NOT NULL,
-	[Message] [nvarchar](max) NOT NULL,
-	[Recipients] [nvarchar](max) NOT NULL,
-	[IsSent] [bit] NOT NULL,
-	[SentDate] [datetime] NULL,
-	[CreatedDate] [datetime] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[EmailId] ASC
+	[RoomScheduleId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[FrequencyType]    Script Date: 30/09/2025 11:12:58 pm ******/
+/****** Object:  Table [dbo].[RoomType]    Script Date: 07/10/2025 12:05:53 am ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[FrequencyType](
-	[FrequencyTypeID] [uniqueidentifier] NOT NULL,
-	[FrequencyName] [nvarchar](50) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[FrequencyTypeID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[GarbageCollectionSchedule]    Script Date: 30/09/2025 11:12:58 pm ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[GarbageCollectionSchedule](
-	[GarbageCollectionScheduleID] [uniqueidentifier] NOT NULL,
-	[DayOfWeekID] [uniqueidentifier] NOT NULL,
-	[FrequencyTypeID] [uniqueidentifier] NOT NULL,
-	[CollectionTime] [time](7) NOT NULL,
-	[EffectiveFrom] [date] NULL,
-	[EffectiveTo] [date] NULL,
-	[IsActive] [bit] NOT NULL,
-	[Notes] [nvarchar](500) NULL,
+CREATE TABLE [dbo].[RoomType](
+	[RoomTypeId] [uniqueidentifier] NOT NULL,
+	[RoomTypeName] [nvarchar](100) NOT NULL,
+	[RoomTypeDescription] [nvarchar](max) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[GarbageCollectionScheduleID] ASC
+	[RoomTypeId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MonthlyDues]    Script Date: 30/09/2025 11:12:58 pm ******/
+/****** Object:  Table [dbo].[UserFingerprints]    Script Date: 07/10/2025 12:05:53 am ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[MonthlyDues](
-	[MonthlyDueID] [uniqueidentifier] NOT NULL,
-	[UserID] [uniqueidentifier] NOT NULL,
-	[Amount] [decimal](10, 2) NOT NULL,
-	[DueDate] [datetime] NOT NULL,
-	[IsPaid] [bit] NOT NULL,
-	[PaidDate] [datetime] NULL,
-	[CreatedDate] [datetime] NOT NULL,
-	[StarDate] [datetime] NOT NULL,
-	[EndDate] [datetime] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[MonthlyDueID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+CREATE TABLE [dbo].[UserFingerprints](
+	[UserFingerprintId] [uniqueidentifier] NOT NULL,
+	[UserId] [uniqueidentifier] NOT NULL,
+	[PositionNumber] [int] NOT NULL,
+	[CreatedDate] [datetime] NOT NULL
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserRole]    Script Date: 30/09/2025 11:12:59 pm ******/
+/****** Object:  Table [dbo].[UserRoles]    Script Date: 07/10/2025 12:05:53 am ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[UserRole](
-	[UserRoleID] [uniqueidentifier] NOT NULL,
+CREATE TABLE [dbo].[UserRoles](
+	[UserRoleId] [uniqueidentifier] NOT NULL,
 	[RoleName] [nvarchar](50) NOT NULL,
+	[RoleDescription] [nvarchar](50) NULL,
 	[CreatedDate] [datetime] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[UserRoleID] ASC
+	[UserRoleId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 30/09/2025 11:12:59 pm ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 07/10/2025 12:05:53 am ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Users](
-	[UserID] [uniqueidentifier] NOT NULL,
+	[UserId] [uniqueidentifier] NOT NULL,
 	[FirstName] [nvarchar](50) NOT NULL,
 	[LastName] [nvarchar](50) NOT NULL,
-	[LotNumber] [nvarchar](50) NOT NULL,
-	[BlockNumber] [nvarchar](50) NOT NULL,
-	[StreetName] [nvarchar](50) NULL,
-	[ContactNumber] [nvarchar](50) NOT NULL,
-	[MoveInDate] [datetime] NOT NULL,
-	[Email] [nvarchar](50) NOT NULL,
+	[UserName] [nvarchar](50) NOT NULL,
 	[Password] [nvarchar](50) NOT NULL,
-	[CreatedDate] [datetime] NOT NULL,
 	[UserRoleId] [uniqueidentifier] NOT NULL,
-	[Latitude] [decimal](9, 6) NULL,
-	[Longitude] [decimal](9, 6) NULL,
-	[HomeOwnerAPIKey] [uniqueidentifier] NULL,
+	[CreatedDate] [datetime] NOT NULL,
+	[Email] [nvarchar](50) NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[UserID] ASC
+	[UserId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-INSERT [dbo].[Announcements] ([AnnouncementId], [Title], [Message], [StartDate], [EndDate], [IsActive], [CreatedDate]) VALUES (N'683ac587-efdd-4438-b039-3e03f851187a', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', CAST(N'2025-09-21' AS Date), CAST(N'2025-09-30' AS Date), 1, CAST(N'2025-09-21T22:40:36.663' AS DateTime))
+INSERT [dbo].[Room] ([RoomId], [RoomName], [RoomDescription], [RoomTypeId], [RoomCode], [CreatedDate]) VALUES (N'fc157fb7-d11a-48cd-a5c4-282010bb9bb1', N'Room 101', N'Room 101', N'58cf9eee-39aa-46c3-9c06-bcffaae4cff7', N'101', CAST(N'2025-10-04T17:48:02.823' AS DateTime))
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'4d55ba74-3e1a-4684-9129-002cf85eedfe', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 1, CAST(N'2025-09-22T21:27:38.680' AS DateTime), NULL)
+INSERT [dbo].[RoomSchedule] ([RoomScheduleId], [ProfessorUserId], [RoomId], [DateOfUse], [StartTime], [EndTime], [CreatedDate], [Note]) VALUES (N'de34acbd-5b2a-446d-bc14-078488f5076e', N'75148f69-e6d4-46ce-8e2c-d17b47e208d9', N'fc157fb7-d11a-48cd-a5c4-282010bb9bb1', CAST(N'2025-10-06' AS Date), CAST(N'13:52:00' AS Time), CAST(N'14:52:00' AS Time), CAST(N'2025-10-04T23:52:50.440' AS DateTime), NULL)
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'd7756ba4-1091-4323-b645-bf796d1dcc46', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 10, CAST(N'2025-09-22T21:28:01.593' AS DateTime), NULL)
+INSERT [dbo].[RoomSchedule] ([RoomScheduleId], [ProfessorUserId], [RoomId], [DateOfUse], [StartTime], [EndTime], [CreatedDate], [Note]) VALUES (N'61c96a7e-a197-4b71-9e59-7ae65b76b6be', N'75148f69-e6d4-46ce-8e2c-d17b47e208d9', N'fc157fb7-d11a-48cd-a5c4-282010bb9bb1', CAST(N'2025-10-06' AS Date), CAST(N'15:00:00' AS Time), CAST(N'16:00:00' AS Time), CAST(N'2025-10-05T00:45:13.313' AS DateTime), NULL)
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'5494afb9-7d4b-4754-b9be-d6131f99c28c', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 20, CAST(N'2025-09-23T20:48:28.960' AS DateTime), NULL)
+INSERT [dbo].[RoomType] ([RoomTypeId], [RoomTypeName], [RoomTypeDescription], [CreatedDate]) VALUES (N'58cf9eee-39aa-46c3-9c06-bcffaae4cff7', N'Classroom', N'Normal Classroom', CAST(N'2025-10-04T17:47:22.937' AS DateTime))
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'84a6d253-e973-49aa-b5d7-e84f25fe8849', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 11, CAST(N'2025-09-23T19:47:25.723' AS DateTime), NULL)
+INSERT [dbo].[UserFingerprints] ([UserFingerprintId], [UserId], [PositionNumber], [CreatedDate]) VALUES (N'b89f40e8-f9e3-4a43-9561-d87fd89eed85', N'ca5818fd-be56-481a-a870-a9343672bcc9', 1, CAST(N'2025-10-06T21:59:23.507' AS DateTime))
 GO
-INSERT [dbo].[BinLog] ([BinLogID], [UserID], [BinStatusPercentage], [CreatedDate], [MQ3Reading]) VALUES (N'e8a99e67-69e6-42b2-bace-fe2fb16e2cf9', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', 12, CAST(N'2025-09-23T19:49:53.687' AS DateTime), NULL)
+INSERT [dbo].[UserFingerprints] ([UserFingerprintId], [UserId], [PositionNumber], [CreatedDate]) VALUES (N'c0159ef5-44d0-4c8c-ad82-a9f21325cab1', N'ca5818fd-be56-481a-a870-a9343672bcc9', 0, CAST(N'2025-10-06T22:28:32.340' AS DateTime))
 GO
-INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'0d52c731-5f63-4246-abd2-264264f83945', N'Tuesday')
+INSERT [dbo].[UserFingerprints] ([UserFingerprintId], [UserId], [PositionNumber], [CreatedDate]) VALUES (N'389d21e8-f2aa-4f3d-bcde-2b654c2dfed3', N'ca5818fd-be56-481a-a870-a9343672bcc9', 5, CAST(N'2025-10-06T23:07:49.790' AS DateTime))
 GO
-INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'b3a10a12-f96d-4fea-b31b-4c42f52f1337', N'Wednesday')
+INSERT [dbo].[UserFingerprints] ([UserFingerprintId], [UserId], [PositionNumber], [CreatedDate]) VALUES (N'87cafc15-9400-4d5b-9e50-15f48b6aff23', N'ca5818fd-be56-481a-a870-a9343672bcc9', 8, CAST(N'2025-10-07T00:04:21.013' AS DateTime))
 GO
-INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'bb036136-5462-49de-a610-60a6f9daf58e', N'Sunday')
+INSERT [dbo].[UserRoles] ([UserRoleId], [RoleName], [RoleDescription], [CreatedDate]) VALUES (N'ba0ad894-7c4c-45be-83fb-72307b2f34a0', N'Checker', N'Checker', CAST(N'2025-10-04T10:41:31.523' AS DateTime))
 GO
-INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'28fc4e2b-8c0d-462f-ac8a-b7261d7a57a3', N'Friday')
+INSERT [dbo].[UserRoles] ([UserRoleId], [RoleName], [RoleDescription], [CreatedDate]) VALUES (N'7a8ceb9d-7c7d-4f77-a063-de54ba4f1d9f', N'Professor', N'Professor', CAST(N'2025-10-04T10:41:31.523' AS DateTime))
 GO
-INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'b0dafb73-5e4e-47af-a369-d0e6f76da5d4', N'Thursday')
+INSERT [dbo].[UserRoles] ([UserRoleId], [RoleName], [RoleDescription], [CreatedDate]) VALUES (N'f504246a-1206-4a78-9d3f-ff0b0346d308', N'Admin', N'Administrator', CAST(N'2025-10-03T20:54:10.630' AS DateTime))
 GO
-INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'a310db8c-b3cf-4b2a-b9ee-d7aaf6ed7841', N'Saturday')
+INSERT [dbo].[Users] ([UserId], [FirstName], [LastName], [UserName], [Password], [UserRoleId], [CreatedDate], [Email]) VALUES (N'ca5818fd-be56-481a-a870-a9343672bcc9', N'System', N'Administrator', N'admin', N'0192023A7BBD73250516F069DF18B500', N'f504246a-1206-4a78-9d3f-ff0b0346d308', CAST(N'2025-10-03T21:45:18.067' AS DateTime), N'classroommonitoring2@gmail.com')
 GO
-INSERT [dbo].[DayOfWeek] ([DayOfWeekID], [Day]) VALUES (N'a9ed7555-37f6-4c52-b239-eb8356a12500', N'Monday')
+INSERT [dbo].[Users] ([UserId], [FirstName], [LastName], [UserName], [Password], [UserRoleId], [CreatedDate], [Email]) VALUES (N'75148f69-e6d4-46ce-8e2c-d17b47e208d9', N'Juan', N'Dela Cruz', N'test', N'098F6BCD4621D373CADE4E832627B4F6', N'7a8ceb9d-7c7d-4f77-a063-de54ba4f1d9f', CAST(N'2025-10-04T23:37:56.700' AS DateTime), N'jom72056@gmail.com')
 GO
-INSERT [dbo].[Emails] ([EmailId], [Title], [Message], [Recipients], [IsSent], [SentDate], [CreatedDate]) VALUES (N'57bb77d2-0cb5-4e75-932f-dc7f99e34933', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', N'j@gmail.com;enriquez.jliquigan@gmail.com;jom72056@gmail.com;smartbin422@gmail.com', 1, CAST(N'2025-09-21T22:40:45.460' AS DateTime), CAST(N'2025-09-21T22:41:00.600' AS DateTime))
+ALTER TABLE [dbo].[Room] ADD  DEFAULT (newid()) FOR [RoomId]
 GO
-INSERT [dbo].[Emails] ([EmailId], [Title], [Message], [Recipients], [IsSent], [SentDate], [CreatedDate]) VALUES (N'90814146-a5f7-40de-a080-ec4f1e49bc83', N'Sample Announcement', N'<h2>Sample Announcement</h2><figure class="table"><table><tbody><tr><td>Column 1</td><td>Column 2</td></tr><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></figure><p><strong>Bold</strong></p><p><i><strong>Bold Italic</strong></i></p><p><i>Italic</i></p><ul><li>Test</li><li>test</li></ul><ol><li>Test</li><li>test</li></ol><blockquote><p>Test only</p></blockquote>', N'j@gmail.com;enriquez.jliquigan@gmail.com;jom72056@gmail.com;smartbin422@gmail.com', 1, CAST(N'2025-09-23T22:57:23.270' AS DateTime), CAST(N'2025-09-23T22:57:36.880' AS DateTime))
+ALTER TABLE [dbo].[Room] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
-INSERT [dbo].[FrequencyType] ([FrequencyTypeID], [FrequencyName]) VALUES (N'2d043b87-eea9-42a9-a9c8-7cd69e500026', N'Daily')
+ALTER TABLE [dbo].[RoomSchedule] ADD  DEFAULT (newid()) FOR [RoomScheduleId]
 GO
-INSERT [dbo].[FrequencyType] ([FrequencyTypeID], [FrequencyName]) VALUES (N'48ef4af4-d1d8-4b30-a9ca-8f17e02a5e78', N'Weekly')
+ALTER TABLE [dbo].[RoomSchedule] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
-INSERT [dbo].[FrequencyType] ([FrequencyTypeID], [FrequencyName]) VALUES (N'8c598bb2-14ae-405a-b907-bcdd544af28e', N'Monthly')
+ALTER TABLE [dbo].[RoomType] ADD  DEFAULT (newid()) FOR [RoomTypeId]
 GO
-INSERT [dbo].[GarbageCollectionSchedule] ([GarbageCollectionScheduleID], [DayOfWeekID], [FrequencyTypeID], [CollectionTime], [EffectiveFrom], [EffectiveTo], [IsActive], [Notes], [CreatedDate]) VALUES (N'12a00426-25ab-45fd-93bc-466b0809eeef', N'0d52c731-5f63-4246-abd2-264264f83945', N'48ef4af4-d1d8-4b30-a9ca-8f17e02a5e78', CAST(N'23:00:00' AS Time), CAST(N'2025-09-01' AS Date), CAST(N'2025-09-19' AS Date), 1, N'      Test', CAST(N'2025-09-20T12:55:33.890' AS DateTime))
+ALTER TABLE [dbo].[RoomType] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
-INSERT [dbo].[MonthlyDues] ([MonthlyDueID], [UserID], [Amount], [DueDate], [IsPaid], [PaidDate], [CreatedDate], [StarDate], [EndDate]) VALUES (N'8d970d16-708d-4544-a86c-439657c8e3aa', N'dfbb2211-1cf7-45c0-b322-1ae3afed2be8', CAST(1111.00 AS Decimal(10, 2)), CAST(N'2025-09-23T08:00:00.000' AS DateTime), 0, NULL, CAST(N'2025-09-23T19:10:32.557' AS DateTime), CAST(N'2025-09-23T08:00:00.000' AS DateTime), CAST(N'2025-09-23T08:00:00.000' AS DateTime))
+ALTER TABLE [dbo].[UserFingerprints] ADD  DEFAULT (newid()) FOR [UserFingerprintId]
 GO
-INSERT [dbo].[MonthlyDues] ([MonthlyDueID], [UserID], [Amount], [DueDate], [IsPaid], [PaidDate], [CreatedDate], [StarDate], [EndDate]) VALUES (N'817c1eb5-4971-4a66-bafa-cc9a23b62c33', N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', CAST(1699.00 AS Decimal(10, 2)), CAST(N'2025-09-26T00:00:00.000' AS DateTime), 1, CAST(N'2025-09-23T00:00:00.000' AS DateTime), CAST(N'2025-09-23T20:58:38.403' AS DateTime), CAST(N'2025-09-23T00:00:00.000' AS DateTime), CAST(N'2025-09-23T00:00:00.000' AS DateTime))
+ALTER TABLE [dbo].[UserFingerprints] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
-INSERT [dbo].[MonthlyDues] ([MonthlyDueID], [UserID], [Amount], [DueDate], [IsPaid], [PaidDate], [CreatedDate], [StarDate], [EndDate]) VALUES (N'f7eb258b-09a1-4e84-899f-dc61e0873820', N'dfbb2211-1cf7-45c0-b322-1ae3afed2be8', CAST(1299.00 AS Decimal(10, 2)), CAST(N'2025-09-30T00:00:00.000' AS DateTime), 1, NULL, CAST(N'2025-09-19T21:27:28.303' AS DateTime), CAST(N'2025-09-01T00:00:00.000' AS DateTime), CAST(N'2025-09-30T00:00:00.000' AS DateTime))
+ALTER TABLE [dbo].[UserRoles] ADD  DEFAULT (newid()) FOR [UserRoleId]
 GO
-INSERT [dbo].[UserRole] ([UserRoleID], [RoleName], [CreatedDate]) VALUES (N'c61e32ce-7775-491e-9859-3780f5dcdba5', N'Admin', CAST(N'2025-09-17T20:32:57.553' AS DateTime))
+ALTER TABLE [dbo].[UserRoles] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
-INSERT [dbo].[UserRole] ([UserRoleID], [RoleName], [CreatedDate]) VALUES (N'2c21d99f-dec7-4876-8614-db8a6b1b1f38', N'Home Owner', CAST(N'2025-09-17T20:32:57.553' AS DateTime))
-GO
-INSERT [dbo].[UserRole] ([UserRoleID], [RoleName], [CreatedDate]) VALUES (N'f9b59208-5e27-4f5f-82b2-f4fdf744df13', N'Garbage Collector', CAST(N'2025-09-17T20:32:57.553' AS DateTime))
-GO
-INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'dfbb2211-1cf7-45c0-b322-1ae3afed2be8', N'Test', N'Test', N'2', N'6', N'Test', N'+639953637231', CAST(N'2025-09-18T00:00:00.000' AS DateTime), N'j@gmail.com', N'098F6BCD4621D373CADE4E832627B4F6', CAST(N'2025-09-18T21:31:25.053' AS DateTime), N'2c21d99f-dec7-4876-8614-db8a6b1b1f38', CAST(14.069444 AS Decimal(9, 6)), CAST(121.143039 AS Decimal(9, 6)), N'dc6f491a-00df-4b04-911c-3016b5c68b18')
-GO
-INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'396ff8e2-349d-49ff-b9ac-27e67b5bbc06', N'Jomiel', N'Enriquez', N'2', N'6', NULL, N'+639953637231', CAST(N'2025-09-16T00:00:00.000' AS DateTime), N'enriquez.jliquigan@gmail.com', N'21232F297A57A5A743894A0E4A801FC3', CAST(N'2025-09-16T22:05:27.060' AS DateTime), N'c61e32ce-7775-491e-9859-3780f5dcdba5', CAST(14.073443 AS Decimal(9, 6)), CAST(121.148041 AS Decimal(9, 6)), NULL)
-GO
-INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'b5f32577-4aaf-4830-ae7f-80fbed77e61e', N'Juan', N'Dela Cruz', N'7', N'7', N'Test', N'+631231231231', CAST(N'2025-09-22T00:00:00.000' AS DateTime), N'jom72056@gmail.com', N'21232F297A57A5A743894A0E4A801FC3', CAST(N'2025-09-22T19:58:18.407' AS DateTime), N'f9b59208-5e27-4f5f-82b2-f4fdf744df13', CAST(14.068488 AS Decimal(9, 6)), CAST(121.149793 AS Decimal(9, 6)), N'b2f90dfa-0b3b-47b6-9f1a-4d974fad78d0')
-GO
-INSERT [dbo].[Users] ([UserID], [FirstName], [LastName], [LotNumber], [BlockNumber], [StreetName], [ContactNumber], [MoveInDate], [Email], [Password], [CreatedDate], [UserRoleId], [Latitude], [Longitude], [HomeOwnerAPIKey]) VALUES (N'96f0b7e6-3639-4890-b0f3-a04a1587edc6', N'System', N'Admin', N'0', N'0', NULL, N'+631231231231', CAST(N'2025-09-18T00:00:00.000' AS DateTime), N'smartbin422@gmail.com', N'21232F297A57A5A743894A0E4A801FC3', CAST(N'2025-09-18T22:33:16.390' AS DateTime), N'c61e32ce-7775-491e-9859-3780f5dcdba5', CAST(14.069444 AS Decimal(9, 6)), CAST(121.143039 AS Decimal(9, 6)), NULL)
-GO
-ALTER TABLE [dbo].[Announcements] ADD  DEFAULT (newid()) FOR [AnnouncementId]
-GO
-ALTER TABLE [dbo].[Announcements] ADD  DEFAULT ((1)) FOR [IsActive]
-GO
-ALTER TABLE [dbo].[Announcements] ADD  DEFAULT (getdate()) FOR [CreatedDate]
-GO
-ALTER TABLE [dbo].[BinLog] ADD  DEFAULT (newid()) FOR [BinLogID]
-GO
-ALTER TABLE [dbo].[BinLog] ADD  DEFAULT ((0)) FOR [BinStatusPercentage]
-GO
-ALTER TABLE [dbo].[BinLog] ADD  DEFAULT (getdate()) FOR [CreatedDate]
-GO
-ALTER TABLE [dbo].[BinLog] ADD  DEFAULT ((0)) FOR [MQ3Reading]
-GO
-ALTER TABLE [dbo].[DayOfWeek] ADD  DEFAULT (newid()) FOR [DayOfWeekID]
-GO
-ALTER TABLE [dbo].[Emails] ADD  DEFAULT (newid()) FOR [EmailId]
-GO
-ALTER TABLE [dbo].[Emails] ADD  DEFAULT ((0)) FOR [IsSent]
-GO
-ALTER TABLE [dbo].[Emails] ADD  DEFAULT (getdate()) FOR [CreatedDate]
-GO
-ALTER TABLE [dbo].[FrequencyType] ADD  DEFAULT (newid()) FOR [FrequencyTypeID]
-GO
-ALTER TABLE [dbo].[GarbageCollectionSchedule] ADD  DEFAULT (newid()) FOR [GarbageCollectionScheduleID]
-GO
-ALTER TABLE [dbo].[GarbageCollectionSchedule] ADD  DEFAULT ((1)) FOR [IsActive]
-GO
-ALTER TABLE [dbo].[MonthlyDues] ADD  DEFAULT (newid()) FOR [MonthlyDueID]
-GO
-ALTER TABLE [dbo].[MonthlyDues] ADD  DEFAULT ((0)) FOR [IsPaid]
-GO
-ALTER TABLE [dbo].[MonthlyDues] ADD  DEFAULT (getdate()) FOR [CreatedDate]
-GO
-ALTER TABLE [dbo].[MonthlyDues] ADD  DEFAULT (getdate()) FOR [StarDate]
-GO
-ALTER TABLE [dbo].[MonthlyDues] ADD  DEFAULT (getdate()) FOR [EndDate]
-GO
-ALTER TABLE [dbo].[UserRole] ADD  DEFAULT (newid()) FOR [UserRoleID]
-GO
-ALTER TABLE [dbo].[UserRole] ADD  DEFAULT (getdate()) FOR [CreatedDate]
-GO
-ALTER TABLE [dbo].[Users] ADD  DEFAULT (newid()) FOR [UserID]
+ALTER TABLE [dbo].[Users] ADD  DEFAULT (newid()) FOR [UserId]
 GO
 ALTER TABLE [dbo].[Users] ADD  DEFAULT (getdate()) FOR [CreatedDate]
 GO
-ALTER TABLE [dbo].[BinLog]  WITH CHECK ADD  CONSTRAINT [FK_BinLog_UserID] FOREIGN KEY([UserID])
-REFERENCES [dbo].[Users] ([UserID])
+ALTER TABLE [dbo].[Room]  WITH CHECK ADD  CONSTRAINT [FK_Room_RoomTypeId] FOREIGN KEY([RoomTypeId])
+REFERENCES [dbo].[RoomType] ([RoomTypeId])
 GO
-ALTER TABLE [dbo].[BinLog] CHECK CONSTRAINT [FK_BinLog_UserID]
+ALTER TABLE [dbo].[Room] CHECK CONSTRAINT [FK_Room_RoomTypeId]
 GO
-ALTER TABLE [dbo].[GarbageCollectionSchedule]  WITH CHECK ADD  CONSTRAINT [FK_GarbageCollectionSchedule_DayOfWeekId] FOREIGN KEY([DayOfWeekID])
-REFERENCES [dbo].[DayOfWeek] ([DayOfWeekID])
+ALTER TABLE [dbo].[RoomSchedule]  WITH CHECK ADD  CONSTRAINT [FK_RoomSchedule_ProfessorUserId] FOREIGN KEY([ProfessorUserId])
+REFERENCES [dbo].[Users] ([UserId])
 GO
-ALTER TABLE [dbo].[GarbageCollectionSchedule] CHECK CONSTRAINT [FK_GarbageCollectionSchedule_DayOfWeekId]
+ALTER TABLE [dbo].[RoomSchedule] CHECK CONSTRAINT [FK_RoomSchedule_ProfessorUserId]
 GO
-ALTER TABLE [dbo].[GarbageCollectionSchedule]  WITH CHECK ADD  CONSTRAINT [FK_GarbageCollectionSchedule_FrequencyTypeID] FOREIGN KEY([FrequencyTypeID])
-REFERENCES [dbo].[FrequencyType] ([FrequencyTypeID])
+ALTER TABLE [dbo].[RoomSchedule]  WITH CHECK ADD  CONSTRAINT [FK_RoomShcedule_RoomId] FOREIGN KEY([RoomId])
+REFERENCES [dbo].[Room] ([RoomId])
 GO
-ALTER TABLE [dbo].[GarbageCollectionSchedule] CHECK CONSTRAINT [FK_GarbageCollectionSchedule_FrequencyTypeID]
+ALTER TABLE [dbo].[RoomSchedule] CHECK CONSTRAINT [FK_RoomShcedule_RoomId]
 GO
-ALTER TABLE [dbo].[MonthlyDues]  WITH CHECK ADD FOREIGN KEY([UserID])
-REFERENCES [dbo].[Users] ([UserID])
+ALTER TABLE [dbo].[UserFingerprints]  WITH CHECK ADD  CONSTRAINT [FK_UserFingerprint_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[Users] ([UserId])
 GO
-ALTER TABLE [dbo].[Users]  WITH CHECK ADD  CONSTRAINT [FK_Users_UserRoleID] FOREIGN KEY([UserRoleId])
-REFERENCES [dbo].[UserRole] ([UserRoleID])
+ALTER TABLE [dbo].[UserFingerprints] CHECK CONSTRAINT [FK_UserFingerprint_UserId]
 GO
-ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_UserRoleID]
+ALTER TABLE [dbo].[Users]  WITH CHECK ADD  CONSTRAINT [FK_Users_UserRoleId] FOREIGN KEY([UserRoleId])
+REFERENCES [dbo].[UserRoles] ([UserRoleId])
+GO
+ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_UserRoleId]
 GO

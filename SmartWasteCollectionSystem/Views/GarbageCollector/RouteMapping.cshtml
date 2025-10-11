@@ -10,54 +10,88 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <div id="map" style="height: 600px;"></div>
-
 <script>
     var dest = @Html.Raw(JsonSerializer.Serialize(Model));
 
-    var map = L.map('map').setView([14.5995, 120.9842], 13);
+    var map = L.map('map').setView([14.07204434863918, 121.15578375478579], 17);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    // 🧍 User icon (blue)
+    var userIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    // 🗑️ Destination icon (green)
+    var destinationIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
     var userMarker = null;
     var routingControl = null;
 
-    var destinations = dest.map(d => L.latLng(d.Latitude, d.Longitude));
+    // 🧭 Add destination markers (with hover info)
+    var destinations = dest.map(d => {
+        var marker = L.marker([d.Latitude, d.Longitude], { icon: destinationIcon })
+            .addTo(map)
+            .bindTooltip(`🗑️ <b>${d.FirstName} ${d.LastName}</b><br>${d.Email}`, { direction: "top" });
+        return L.latLng(d.Latitude, d.Longitude);
+    });
 
-    // Watch position (updates continuously)
+    // 📍 Watch the user's live position
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(function (position) {
             var userLat = position.coords.latitude;
             var userLng = position.coords.longitude;
             var userLocation = L.latLng(userLat, userLng);
 
-            // Update or add user marker
+            // Add or update user marker
             if (!userMarker) {
-                userMarker = L.marker(userLocation).addTo(map)
-                    .bindPopup("You are here").openPopup();
+                userMarker = L.marker(userLocation, { icon: userIcon })
+                    .addTo(map)
+                    .bindTooltip("🧍 You are here", { direction: "top" })
+                    .openTooltip();
             } else {
                 userMarker.setLatLng(userLocation);
             }
 
             // Center map on user
-            map.setView(userLocation, 15);
+            map.setView(userLocation, 17);
 
-            // Build full waypoints list: [current location + all destinations]
+            // Build waypoints: [user + destinations]
             var waypoints = [userLocation].concat(destinations);
 
-            // Update route dynamically
+            // If route already exists, update it
             if (routingControl) {
                 routingControl.setWaypoints(waypoints);
             } else {
                 routingControl = L.Routing.control({
                     waypoints: waypoints,
                     routeWhileDragging: false,
+                    addWaypoints: false,
+                    showAlternatives: false,
+                    createMarker: function() { return null; }, // 🚫 prevent default blue markers
+                    lineOptions: {
+                        styles: [{ color: '#007bff', weight: 5 }]
+                    },
                     router: L.Routing.osrmv1({
                         serviceUrl: 'https://router.project-osrm.org/route/v1'
                     })
                 }).addTo(map);
             }
+
         }, function (error) {
             alert("Error getting location: " + error.message);
         }, {
@@ -67,4 +101,75 @@
     } else {
         alert("Geolocation is not supported by this browser.");
     }
+        // 🧭 Utility to calculate distance between two coordinates (in meters)
+    function getDistance(lat1, lon1, lat2, lon2) {
+        var R = 6371e3; // meters
+        var φ1 = lat1 * Math.PI / 180;
+        var φ2 = lat2 * Math.PI / 180;
+        var Δφ = (lat2 - lat1) * Math.PI / 180;
+        var Δλ = (lon2 - lon1) * Math.PI / 180;
+
+        var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // distance in meters
+    }
+
+    // 🕐 Store prompt timers to avoid multiple popups for same location
+    var promptTimers = {};
+
+    // 🧩 Watch user’s position again for proximity detection
+    navigator.geolocation.watchPosition(function (position) {
+        var userLat = position.coords.latitude;
+        var userLng = position.coords.longitude;
+        var userLocation = L.latLng(userLat, userLng);
+
+        // Check each destination
+        dest.forEach(function (d, index) {
+            var distance = getDistance(userLat, userLng, d.Latitude, d.Longitude);
+
+            if (distance <= 20) {
+                // within 20 meters → start prompting every 5 seconds
+                if (!promptTimers[index]) {
+                    promptTimers[index] = setInterval(function () {
+                        var confirmRemove = confirm(
+                            `You are within 20 meters of ${d.FirstName} ${d.LastName}.\nDo you want to remove this destination?`
+                        );
+
+                        if (confirmRemove) {
+                            // 🗑️ remove marker from map
+                            var marker = Object.values(map._layers)
+                                .find(l => l._latlng && l._latlng.lat === d.Latitude && l._latlng.lng === d.Longitude);
+                            if (marker) map.removeLayer(marker);
+
+                            // remove destination from list
+                            dest.splice(index, 1);
+
+                            // update route
+                            var newWaypoints = [userLocation].concat(dest.map(x => L.latLng(x.Latitude, x.Longitude)));
+                            if (routingControl) routingControl.setWaypoints(newWaypoints);
+
+                            // stop prompting
+                            clearInterval(promptTimers[index]);
+                            delete promptTimers[index];
+                        }
+                    }, 5000);
+                }
+            } else {
+                // stop prompting if user moves away
+                if (promptTimers[index]) {
+                    clearInterval(promptTimers[index]);
+                    delete promptTimers[index];
+                }
+            }
+        });
+    }, function (error) {
+        console.error("Error getting location for proximity check:", error.message);
+    }, {
+        enableHighAccuracy: true,
+        maximumAge: 0
+    });
+
 </script>

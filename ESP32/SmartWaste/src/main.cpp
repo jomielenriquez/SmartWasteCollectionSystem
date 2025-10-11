@@ -289,7 +289,7 @@ void handleBinSettingsPage() {
   page += "<form action='/saveBinSettings' method='POST'>";
   page += "<label for='binOpenTravelCounterLimit'>Bin Open Travel Counter Limit (sec):</label><input type='text' name='binOpenTravelCounterLimit' id='binOpenTravelCounterLimit' value='" + String(binOpenTravelCounterLimit, 1) + "'>";
   page += "<label for='binOpenCounterLimit'>Bin Open Counter Limit (sec):</label><input type='text' name='binOpenCounterLimit' id='binOpenCounterLimit' value='" + String(binOpenCounterLimit, 1) + "'>";
-  page += "<label for='binHeight'>Bin Height (m):</label><input type='text' name='binHeight' id='binHeight' value='" + String(binHeight, 1) + "'>";
+  page += "<label for='binHeight'>Bin Height (inch):</label><input type='text' name='binHeight' id='binHeight' value='" + String(binHeight, 1) + "'>";
   page += "<label for='binLock'>Bin Lock (%):</label><input type='text' name='binLock' id='binLock' value='" + String(binLock, 1) + "'>";
   page += "<button type='submit' class='btn-primary'>Save</button></form>";
   page += pageFooter();

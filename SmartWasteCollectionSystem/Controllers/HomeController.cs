@@ -61,7 +61,8 @@ namespace SmartWasteCollectionSystem.Controllers
                     u.CreatedDate.Month == localTime.Month
                 ).ToList();
             }
-            else if (userRole == "Home Owner" || userRole == "Garbage Collector")
+            
+            if (userRole == "Home Owner" || userRole == "Garbage Collector")
             {
                 dashboardData.CollectionSchedule = _garbage.GetByConditionAndIncludes(g =>
                     g.IsActive == true
@@ -77,7 +78,8 @@ namespace SmartWasteCollectionSystem.Controllers
                     && a.EndDate >= DateOnly.FromDateTime(localTime)
                 ).Count();
             }
-            else if (userRole == "Home Owner")
+
+            if (userRole == "Home Owner")
             {
                 dashboardData.BinStatusPercentage = _bin.GetByCondition(b =>
                     b.UserId == Guid.Parse(User.FindFirstValue("Id"))
